@@ -35,7 +35,7 @@ your repo access and to practice PR'ing with your team *before* you start
 coding!
 
 - Katie Hill #1: [GitHub](https://github.com/KatieHill-Fr-Gr) / [LinkedIn](https://linkedin.com/in/katie-hill-fullstack/)
-- Teammate name #2: [GitHub](https://github.com/ghaccountname) / [LinkedIn](https://linkedin.com/in/liaccountname)
+- Alwin Puche #2: [GitHub](https://github.com/awyyyn) / [LinkedIn](https://www.linkedin.com/in/alwin-puche-7295851b7)
 
    ...
 - Teammate name #n: [GitHub](https://github.com/ghaccountname) / [LinkedIn](https://linkedin.com/in/liaccountname)
