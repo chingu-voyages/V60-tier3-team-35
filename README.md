@@ -36,6 +36,6 @@ coding!
 
 - Katie Hill #1: [GitHub](https://github.com/KatieHill-Fr-Gr) / [LinkedIn](https://linkedin.com/in/katie-hill-fullstack/)
 - Alwin Puche #2: [GitHub](https://github.com/awyyyn) / [LinkedIn](https://www.linkedin.com/in/alwin-puche-7295851b7)
-
+- Nadiia Lashtun #3: [GitHub](https://github.com/NadiiaLashtun) / [LinkedIn](https://www.linkedin.com/in/lashtun/)
    ...
 - Teammate name #n: [GitHub](https://github.com/ghaccountname) / [LinkedIn](https://linkedin.com/in/liaccountname)
