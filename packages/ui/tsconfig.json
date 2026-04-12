@@ -3,7 +3,11 @@
   "compilerOptions": {
     "outDir": "dist",
     "strictNullChecks": true,
+    "noEmit": false,
+    "paths": {
+      "@repo/ui/*": ["./src/*"],
+    },
   },
-  "include": ["src"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"],
 }
