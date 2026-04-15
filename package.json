@@ -1,9 +1,10 @@
 {
-  "name": "V60-tier3-team-35",
+  "name": "v60-tier3-team-35",
   "private": true,
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
+    "test": "turbo run test",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types"
