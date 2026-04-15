@@ -28,7 +28,7 @@
     Roboto Mono, Geist Mono, Geist Mono Fallback, ui-monospace, SFMono-Regular,
     Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
-  --radius: 0.25rem;
+  --radius: 625rem;
 
   --shadow-2xs: 0px 1px 3px 0px oklch(0.35 0.05 163.02 / 0.02);
   --shadow-xs: 0px 1px 3px 0px oklch(0.35 0.05 163.02 / 0.02);
@@ -63,7 +63,7 @@
   --paragraph: oklch(0.85 0 0);
   --captions: oklch(0.65 0 0);
   --link: oklch(0.58 0.10 125);
-  --link-hover:oklch(0.65 0.12 125);
+  --link-hover: oklch(0.65 0.12 125);
   --error: oklch(0.58 0.18 25);
 
   --shadow-2xs: 0px 1px 2px 0px oklch(0 0 0 / 0.01);
@@ -83,6 +83,23 @@
 
 @theme inline {
   --color-background: var(--background);
+  --color-foreground: var(--headline);
+  --color-primary: var(--accent1);
+  --color-primary-foreground: oklch(1 0 0);
+  --color-secondary: var(--accent2);
+  --color-secondary-foreground: var(--headline);
+  --color-accent: var(--accent5);
+  --color-accent-foreground: var(--headline);
+  --color-muted: var(--accent5);
+  --color-muted-foreground: var(--captions);
+  --color-destructive: var(--error);
+  --color-border: var(--divider);
+  --color-input: var(--divider);
+  --color-ring: var(--accent1);
+  --color-card: var(--background);
+  --color-card-foreground: var(--headline);
+  --color-popover: var(--background);
+  --color-popover-foreground: var(--headline);
   --color-accent1: var(--accent1);
   --color-accent2: var(--accent2);
   --color-accent3: var(--accent3);
@@ -118,9 +135,10 @@
 
 @layer base {
   * {
-    @apply border-divider outline-accent1/50;
+    @apply border-border outline-accent1/50;
   }
   body {
-    @apply bg-background text-headline;
+    @apply bg-background text-foreground;
   }
 }
+
