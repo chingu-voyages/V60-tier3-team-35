@@ -1,8 +1,6 @@
 import { Button } from "@repo/ui/components/button";
 import { Link } from "react-router";
 
-type Tab = "growing" | "planning";
-
 export default function Dashboard() {
 
     return (
@@ -21,7 +19,7 @@ export default function Dashboard() {
 
             </div>
 
-            <div className="min-h-1/2 flex items-stretch mt-6">
+            <div className="min-h-1/2 flex flex-col md:flex-row items-stretch mt-6 px-4">
                 {/* Left box */}
                 <div className="flex-1 flex flex-col items-start p-6 gap-4">
                     <h2>London, UK – Spring</h2>
