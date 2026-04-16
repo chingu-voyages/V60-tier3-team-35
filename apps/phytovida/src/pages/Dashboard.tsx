@@ -1,37 +1,44 @@
 import { Button } from "@repo/ui/components/button";
 import { Link } from "react-router";
-import { useState } from "react";
 
 type Tab = "growing" | "planning";
 
 export default function Dashboard() {
-    const [activeTab, setActiveTab] = useState<Tab>("growing");
 
     return (
-    <div className="h-full grid place-content-center gap-6">
-      <h1 className="text-headline">Welcome, username</h1>
+        <div className="h-full grid place-content-center gap-6">
+            <h1 className="text-headline">Welcome, username</h1>
 
-      <div className="flex justify-center gap-3">
+            <div className="flex justify-center gap-3">
 
-        <Button className="rounded-full" 
-        variant={activeTab === "growing" ? "default" : "secondary"} 
-        onClick={() => setActiveTab ("growing")}>
-          Growing
-        </Button>
+                <Button className="rounded-full" variant="secondary" asChild>
+                    <Link to="/">Growing</Link>
+                </Button>
 
-        <Button className="rounded-full bg-accent3"
-        variant={activeTab === "planning" ? "default" : "secondary"} 
-        onClick={() => setActiveTab ("planning")}>
-          Planning
-        </Button>
+                <Button className="rounded-full bg-accent3" variant="secondary" asChild>
+                    <Link to="/">Planning</Link>
+                </Button>
 
-      </div>
+            </div>
 
-        <div>
-        {activeTab === "growing" && <p>My Garden goes here</p>}
-        {activeTab === "planning" && <p>Planting Queue goes here</p>}
-      </div>
+            <div className="min-h-1/2 flex items-stretch mt-6">
+                {/* Left box */}
+                <div className="flex-1 flex flex-col items-start p-6 gap-4">
+                    <h2>London, UK – Spring</h2>
+                    <p>Spring in London is a wonderful time for gardening with mild temperatures (15–25°C / 59–77°F), some April showers that help establish new plantings, and long sunny days.</p>
+                    <Button className="rounded-full bg-accent2" variant="secondary" asChild>
+                        <Link to="/">Change location</Link>
+                    </Button>
+                </div>
 
-    </div>
+                {/* Right box */}
+                <div className="flex-1 flex flex-col items-start bg-accent1 rounded-xl p-8 gap-6">
+                    <h2 className="text-white leading-none">18°C</h2>
+                    <p className="text-white/80">Cloudy with 40% chance of rain</p>
+                    <p className="text-white/80">Humidity 69%</p>
+                </div>
+            </div>
+
+        </div>
     );
 }
