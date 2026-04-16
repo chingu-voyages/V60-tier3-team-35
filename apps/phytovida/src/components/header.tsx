@@ -12,11 +12,12 @@ export function Header() {
 		<header className="flex justify-between items-center py-4 px-5">
 			<img src={logo} alt="pythovida logo" />
 
-			<nav>
+			<nav className="hidden md:flex gap-6 px-6 py-2">
 				{/* // TODO: Add navigation links and other header elements and make it responsive */}
-				<Link to="/" className="text-gray-600 hover:text-gray-900">
-					Home
-				</Link>
+					<Link to="/" className="font-sans text-sm font-bold text-base text-accent4 hover:text-link transition-colors duration-200">My Garden</Link>
+					<Link to="/" className="font-sans text-sm font-bold text-base text-accent4 hover:text-link transition-colors duration-200">Plant Library</Link>
+					<Link to="/" className="font-sans text-sm font-bold text-base text-accent4 hover:text-link transition-colors duration-200">Guides</Link>
+					<Link to="/" className="font-sans text-sm font-bold text-base text-accent4 hover:text-link transition-colors duration-200">Community</Link>
 			</nav>
 			{!isSignedIn ? (
 				<Button className="rounded-full" asChild>
@@ -26,7 +27,7 @@ export function Header() {
 						<ArrowUpRight />
 					</Link>
 				</Button>
-			) : (
+				) : (
 				<SignOutButton>
 					<Button variant="destructive" className="rounded-full">
 						<span className="sr-only">Log out</span>
