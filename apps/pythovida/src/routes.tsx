@@ -14,6 +14,7 @@ export default function AppRoutes() {
 			</Route>
 			<Route path="/" element={<CommonLayout />}>
 				<Route index element={<Home />} />
+				<Route path="test" element={<p>Test</p>} />
 			</Route>
 			<Route path="*" element={<NotFound />} />
 		</Routes>
