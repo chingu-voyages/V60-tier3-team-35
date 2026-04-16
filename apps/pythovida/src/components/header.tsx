@@ -1,0 +1,39 @@
+import logo from "@/assets/logo.svg";
+import { SignInButton, SignOutButton, useAuth } from "@clerk/react";
+import { Button } from "@repo/ui/components/button";
+import { ArrowUpRight, LogOut } from "lucide-react";
+import { Link } from "react-router";
+
+export function Header() {
+	const { isSignedIn } = useAuth();
+
+	return (
+		<header className="flex justify-between items-center py-4 px-5">
+			<img src={logo} alt="pythovida logo" />
+
+			<nav>
+				{/* // TODO: Add navigation links and other header elements and make it responsive */}
+				<Link to="/" className="text-gray-600 hover:text-gray-900">
+					Home
+				</Link>
+			</nav>
+			{!isSignedIn ? (
+				<SignInButton>
+					<Button className="rounded-full">
+						<span className="sr-only">Log in</span>
+						Log in
+						<ArrowUpRight />
+					</Button>
+				</SignInButton>
+			) : (
+				<SignOutButton>
+					<Button variant="destructive" className="rounded-full">
+						<span className="sr-only">Log out</span>
+						Log out
+						<LogOut />
+					</Button>
+				</SignOutButton>
+			)}
+		</header>
+	);
+}
