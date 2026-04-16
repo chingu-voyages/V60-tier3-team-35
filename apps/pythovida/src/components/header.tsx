@@ -18,13 +18,13 @@ export function Header() {
 				</Link>
 			</nav>
 			{!isSignedIn ? (
-				<SignInButton>
-					<Button className="rounded-full">
+				<Button className="rounded-full" asChild>
+					<Link to="/auth/sign-in">
 						<span className="sr-only">Log in</span>
 						Log in
 						<ArrowUpRight />
-					</Button>
-				</SignInButton>
+					</Link>
+				</Button>
 			) : (
 				<SignOutButton>
 					<Button variant="destructive" className="rounded-full">
