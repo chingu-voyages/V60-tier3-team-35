@@ -38,8 +38,13 @@ export default function Dashboard() {
                     <p className="text-white/80">Humidity 69%</p>
                 </div>
             </div>
+            <div className="min-h-1/2 flex flex-col md:flex-row items-stretch mt-6 px-4">
+                <div className="flex-1 flex flex-col items-start p-6 gap-4">
+                    <h2>Today's tasks</h2>
+                </div>
+            </div>
 
-            <div>
+            <div className="min-h-1/2 flex flex-col md:flex-row justify-center mt-6 px-4">
                 <PlantCalendar />
             </div>
 
