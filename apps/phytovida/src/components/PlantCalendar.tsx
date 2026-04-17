@@ -5,7 +5,7 @@ export function PlantCalendar() {
 
     return (
         <>
-        <Calendar />
+        <Calendar className="w-full bg-divider rounded-xl"/>
 
         </>
 
