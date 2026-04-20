@@ -7,7 +7,7 @@ export default function Dashboard() {
 
     return (
         <div className="h-full grid place-content-center gap-6">
-            <h1 className="text-headline">Welcome, username</h1>
+            <h1 className="flex justify-center py-8 text-headline">Welcome, username</h1>
 
             <div className="flex justify-center gap-3">
 
