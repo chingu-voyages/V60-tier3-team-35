@@ -13,7 +13,6 @@ export function PlantCalendar() {
             mode="single"
             selected={selectedDate}
             onSelect={setSelectedDate}/>
-
         </>
 
     );
