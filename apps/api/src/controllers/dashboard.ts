@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import { db } from "../db/index.js";
 import { eq } from "drizzle-orm";
 import { userSettings, usersPlants, plants } from "../db/schema.js";
@@ -12,11 +12,26 @@ export const getDashboardData = async (req: Request, res: Response) => {
   }
 
   try {
-    const settings = await db
+    const settingsRows = await db
       .select()
       .from(userSettings)
       .where(eq(userSettings.userId, userId))
       .limit(1);
+
+    let settings;
+
+    if (settingsRows.length === 0) {
+      const newSettings = await db
+        .insert(userSettings)
+        .values({
+          userId: userId,
+          homeLocation: "London",
+        })
+        .returning();
+      settings = newSettings[0];
+    } else {
+      settings = settingsRows[0];
+    }
 
     const userPlantsList = await db
       .select({
@@ -31,10 +46,11 @@ export const getDashboardData = async (req: Request, res: Response) => {
       .where(eq(usersPlants.userId, userId));
 
     res.json({
-      location: settings[0]?.homeLocation || "London, UK",
+      location: settings?.homeLocation ?? "Leipzig",
       plants: userPlantsList,
     });
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error("Dashboard Error:", error);
     res.status(500).json({ error: "Failed to fetch dashboard data" });
   }
