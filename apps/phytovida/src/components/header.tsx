@@ -1,7 +1,7 @@
 import logo from '@/assets/logo.svg';
-import { SignOutButton, useAuth, UserButton } from '@clerk/react';
+import { useAuth, UserButton } from '@clerk/react';
 import { Button } from '@repo/ui/components/button';
-import { ArrowUpRight, LogOut, Menu, X } from 'lucide-react';
+import { ArrowUpRight, Menu, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router';
 import { useState } from 'react';
 
