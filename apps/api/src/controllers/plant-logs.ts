@@ -78,6 +78,13 @@ export const plantLogsController = async (req: Request, res: Response) => {
 		const plantId = req.params.plantId as string;
 		const to = req.query.to as string | undefined;
 
+		if (!req.userId) {
+			return res.status(401).json({
+				error: true,
+				message: "Unauthorized: Missing user authentication.",
+			});
+		}
+
 		if (!plantId) {
 			res.status(404).json({
 				error: true,
@@ -88,7 +95,10 @@ export const plantLogsController = async (req: Request, res: Response) => {
 
 		const offset = (page - 1) * limit;
 
-		const filters = [eq(plantWateringLogs.plantId, plantId)];
+		const filters = [
+			eq(plantWateringLogs.plantId, plantId),
+			eq(plantWateringLogs.userId, req.userId),
+		];
 
 		if (from) {
 			filters.push(gte(plantWateringLogs.wateredAt, new Date(from)));
@@ -127,5 +137,177 @@ export const plantLogsController = async (req: Request, res: Response) => {
 	} catch (error) {
 		console.log(error);
 		res.status(500).json({ error: "Failed to fetch plant logs" });
+	}
+};
+
+export const createPlantLogController = async (
+	req: Request<Pick<Params, "plantId">>,
+	res: Response,
+) => {
+	try {
+		const userId = req.userId;
+		const plantId = req.params.plantId;
+
+		if (!userId) {
+			res.status(401).json({
+				error: true,
+				message: "Unauthorized: Missing user authentication.",
+			});
+			return;
+		}
+
+		// ownership check
+		const ownership = await db
+			.select()
+			.from(usersPlants)
+			.where(
+				and(eq(usersPlants.plantId, plantId), eq(usersPlants.userId, userId)),
+			)
+			.limit(1);
+
+		if (!ownership.length) {
+			return res.status(403).json({
+				error: true,
+				message: "Forbidden: You do not have access to this plant.",
+			});
+		}
+
+		const [log] = await db
+			.insert(plantWateringLogs)
+			.values({
+				userId,
+				plantId,
+			})
+			.returning();
+
+		return res.status(201).json({
+			data: log,
+		});
+	} catch (error) {
+		console.log(error);
+		return res.status(500).json({
+			error: true,
+			message: "Failed to create plant log",
+		});
+	}
+};
+
+export const deletePlantLogController = async (
+	req: Request<Pick<Params, "plantId" | "logId">>,
+	res: Response,
+) => {
+	try {
+		const userId = req.userId!;
+		const { plantId, logId } = req.params;
+
+		// ownership check
+		const ownership = await db
+			.select()
+			.from(usersPlants)
+			.where(
+				and(eq(usersPlants.plantId, plantId), eq(usersPlants.userId, userId)),
+			)
+			.limit(1);
+
+		if (!ownership.length) {
+			return res.status(403).json({
+				error: true,
+				message: "Forbidden: You do not have access to this plant.",
+			});
+		}
+
+		// ensure log belongs to plant + user
+		const deleted = await db
+			.delete(plantWateringLogs)
+			.where(
+				and(
+					eq(plantWateringLogs.id, Number(logId)),
+					eq(plantWateringLogs.plantId, plantId),
+					eq(plantWateringLogs.userId, userId),
+				),
+			)
+			.returning();
+
+		if (!deleted.length) {
+			return res.status(404).json({
+				error: true,
+				message: "Plant log not found.",
+			});
+		}
+
+		return res.status(200).json({
+			message: "Plant log deleted successfully.",
+			data: deleted[0],
+		});
+	} catch (error) {
+		console.log(error);
+		return res.status(500).json({
+			error: true,
+			message: "Failed to delete plant log",
+		});
+	}
+};
+
+type Body = {
+	wateredAt?: string;
+};
+
+export const updatePlantLogController = async (
+	req: Request<Pick<Params, "plantId" | "logId">, {}, Body>,
+	res: Response,
+) => {
+	try {
+		const userId = req.userId!;
+		const { plantId, logId } = req.params;
+		const { wateredAt } = req.body;
+
+		// ownership check
+		const ownership = await db
+			.select()
+			.from(usersPlants)
+			.where(
+				and(eq(usersPlants.plantId, plantId), eq(usersPlants.userId, userId)),
+			)
+			.limit(1);
+
+		if (!ownership.length) {
+			return res.status(403).json({
+				error: true,
+				message: "Forbidden: You do not have access to this plant.",
+			});
+		}
+
+		// update log
+		const updated = await db
+			.update(plantWateringLogs)
+			.set({
+				...(wateredAt ? { wateredAt: new Date(wateredAt) } : {}),
+			})
+			.where(
+				and(
+					eq(plantWateringLogs.id, Number(logId)),
+					eq(plantWateringLogs.plantId, plantId),
+					eq(plantWateringLogs.userId, userId),
+				),
+			)
+			.returning();
+
+		if (!updated.length) {
+			return res.status(404).json({
+				error: true,
+				message: "Plant log not found.",
+			});
+		}
+
+		return res.status(200).json({
+			message: "Plant log updated successfully.",
+			data: updated[0],
+		});
+	} catch (error) {
+		console.log(error);
+		return res.status(500).json({
+			error: true,
+			message: "Failed to update plant log",
+		});
 	}
 };
