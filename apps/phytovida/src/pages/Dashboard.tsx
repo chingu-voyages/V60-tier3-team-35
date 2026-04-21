@@ -3,7 +3,7 @@ import { useUser } from "@clerk/clerk-react";
 import { Button } from "@repo/ui/components/button";
 // import { LocationCard } from "../components/LocationCard";
 // import { WeatherCard } from "../components/WeatherCard";
-// import { TaskList } from "../components/TaskList";
+import { TaskList } from "../components/TaskList";
 import { PlantCalendar } from "../components/PlantCalendar";
 import { Link } from "react-router";
 import type { DashboardResponse } from "@repo/types";
@@ -68,32 +68,8 @@ export default function Dashboard() {
       <div className="min-h-1/2 flex flex-col md:flex-row items-stretch mt-6 px-4">
         <div className="flex-1 flex flex-col items-start p-6 gap-4">
           <h2>Today's tasks</h2>
+          <TaskList />
         </div>
-      </div>
-
-      <div className="min-h-1/2 flex flex-col md:flex-row items-stretch mt-6 px-4 gap-4">
-        {data?.plants && data.plants.length > 0 ? (
-          data.plants.map((plant, index) => (
-            <div
-              key={plant.id}
-              className="flex-1 flex flex-col items-start p-6 gap-4 bg-divider rounded-xl"
-            >
-              {plant.image && (
-                <img
-                  src={plant.image}
-                  alt={plant.name}
-                  className="w-full h-32 object-cover rounded-lg mb-2"
-                />
-              )}
-              <h2 className="leading-none">{index + 1}</h2>
-              <p>Water {plant.name}</p>
-            </div>
-          ))
-        ) : (
-          <div className="flex-1 p-6 bg-divider rounded-xl opacity-50">
-            <p>No plants added yet. Go to Growing to start!</p>
-          </div>
-        )}
       </div>
 
       <div className="min-h-1/2 flex flex-col md:flex-row justify-center mt-6 px-4">
