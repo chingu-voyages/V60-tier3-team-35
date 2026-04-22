@@ -9,6 +9,9 @@ const PORT = process.env.PORT || 3001;
 
 // Middlewares
 app.use(cors());
+
+app.use("/api/auth/register/clerk", express.raw({ type: "application/json" }));
+
 app.use(express.json());
 app.use(clerkMiddleware({}));
 

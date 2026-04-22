@@ -4,11 +4,14 @@ import { Router } from "express";
 import dashboardRoutes from "./dashboard.js";
 import logRoutes from "./plant-logs.js";
 import userPlantRoutes from "./user-plant.js";
+import authRoutes from "./auth.js";
 
 // middleware
 import { authGuard } from "../middlewares/authGuard.js";
 
 const router: Router = Router();
+
+router.use("/auth", authRoutes)
 
 router.use("/dashboard", dashboardRoutes);
 
