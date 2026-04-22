@@ -6,6 +6,7 @@ import CommonLayout from './layouts/common-layout';
 import SignInPage from './pages/auth/SignIn';
 import SignUpPage from './pages/auth/SignUp';
 import AuthLayout from './layouts/auth-layout';
+import MyGarden from './pages/MyGarden';
 
 export default function AppRoutes() {
   return (
@@ -40,8 +41,8 @@ export default function AppRoutes() {
           element={<Dashboard />}
         />
         <Route
-          path='test'
-          element={<p>Test</p>}
+          path='my-garden'
+          element={<MyGarden />}
         />
       </Route>
       <Route
