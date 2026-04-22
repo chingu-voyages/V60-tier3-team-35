@@ -7,6 +7,7 @@ import SignInPage from './pages/auth/SignIn';
 import SignUpPage from './pages/auth/SignUp';
 import AuthLayout from './layouts/auth-layout';
 import MyGarden from './pages/MyGarden';
+import UserPlant from './pages/UserPlant';
 
 export default function AppRoutes() {
   return (
@@ -42,8 +43,15 @@ export default function AppRoutes() {
         />
         <Route
           path='my-garden'
-          element={<MyGarden />}
-        />
+        >
+          <Route
+            index
+            element={<MyGarden />} />
+          <Route
+            path=':userPlantId'
+            element={<UserPlant />}
+          />
+        </Route>
       </Route>
       <Route
         path='*'
