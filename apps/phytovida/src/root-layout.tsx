@@ -2,6 +2,7 @@ import { ClerkProvider } from "@clerk/clerk-react";
 import { useNavigate } from "react-router";
 import AppRoutes from "./routes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 export default function App() {
 	const navigate = useNavigate();
@@ -34,6 +35,8 @@ export default function App() {
 				publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY}>
 				<AppRoutes />
 			</ClerkProvider>
+
+			{import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
 		</QueryClientProvider>
 	);
 }
