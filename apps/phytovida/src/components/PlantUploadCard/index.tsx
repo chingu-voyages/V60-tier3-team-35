@@ -48,7 +48,12 @@ export default function PlantUploadCard({
       className={`relative w-full  rounded-3xl overflow-hidden flex flex-col items-center justify-center py-16 px-8  ${className ?? ""}`}
       style={{ backgroundColor: "#eef0ed", minHeight: "380px" }}
       onClick={handleClick}
-      onKeyDown={(e) => e.key === "Enter" && handleClick()}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          handleClick();
+        }
+      }}
       role="button"
       aria-label="Upload a plant photo"
       tabIndex={0}

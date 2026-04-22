@@ -1,11 +1,12 @@
 export default function LeafWatermark() {
   return (
     <svg
+      aria-hidden="true"
       className="absolute bottom-0 left-0 w-72 h-72 opacity-[0.13] pointer-events-none select-none"
       viewBox="0 0 300 300"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-    >
+    >  
       <path
         d="M20 280 C60 200, 180 160, 240 40 C180 80, 80 100, 20 280Z"
         fill="#6b7c6b"
