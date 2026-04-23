@@ -16,7 +16,7 @@ router.use("/auth", authRoutes)
 router.use("/dashboard", dashboardRoutes);
 
 // user plants
-router.use("/my-plants", /* authGuard */ userPlantRoutes); // TODO: uncomment authGuard middleware IF user have plants data
+router.use("/my-plants", authGuard, userPlantRoutes); // TODO: uncomment authGuard middleware IF user have plants data
 router.use("/my-plants/:plantId/logs", authGuard, logRoutes);
 
 export default router;

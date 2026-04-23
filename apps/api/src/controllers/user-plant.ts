@@ -2,7 +2,25 @@ import type { Request, Response } from "express";
 import { plants, usersPlants } from "../db/schema.js";
 import { db } from "../db/index.js";
 import { and, eq } from "drizzle-orm";
+import { addUserPlant } from "../services/user-plants.js";
 
+export const createUserPlantController = async (req: Request, res: Response) => {
+	const userId = req.userId || "";
+	const { plantId, phase, wateringFrequency, lastWateredDate } = req.body;
+
+	const answer = await addUserPlant({ userId, plantId, phase, wateringFrequency, lastWateredDate });
+
+	answer.match((userPlant) => {
+		return res.status(201).json({ userPlant });
+	}, (error) => {
+		if (error.reason === "UserNotFound" || error.reason === "PlantNotFound") {
+			return res.status(404).json({ error: true, message: error.message });
+		} else {
+			return res.status(500).json({ error: true, message: error.message });
+		}
+	})
+
+}
 export const readUserPlantsController = async (req: Request, res: Response) => {
 	try {
 		// const userId = req.userId!; // TODO: uncomment later

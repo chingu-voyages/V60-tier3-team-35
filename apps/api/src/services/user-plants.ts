@@ -4,13 +4,14 @@ import { db } from "../db/index.js";
 import { userSettings, usersPlants, plants } from "../db/schema.js";
 import { errAsync, okAsync } from "neverthrow";
 
-export const addUserPlant = async (userId: string, plant: UserPlantCreation) => {
+export const addUserPlant = async (userPlant: UserPlantCreation) => {
     try {
+        const userId = userPlant.userId;
         // Check if user exists in the database
         const user = await db
             .select()
             .from(userSettings)
-            .where(eq(userSettings.userId, userId))
+            .where(eq(userSettings.userId, userPlant.userId))
             .limit(1);
 
         if (user.length === 0) {
@@ -20,7 +21,7 @@ export const addUserPlant = async (userId: string, plant: UserPlantCreation) => 
         // Check if plant exists in the database
         const plantFromDb = await db.select()
             .from(plants)
-            .where(eq(plants.id, plant.plantId))
+            .where(eq(plants.id, userPlant.plantId))
             .limit(1);
 
         if (plantFromDb.length === 0) {
@@ -28,10 +29,7 @@ export const addUserPlant = async (userId: string, plant: UserPlantCreation) => 
         }
 
         // If it does, add it to the user's collection with the provided details
-        return okAsync(await db.insert(usersPlants).values({
-            userId,
-            ...plant
-        }));
+        return okAsync(await db.insert(usersPlants).values(userPlant));
     } catch (error) {
         return errAsync({ reason: "InternalServerError", message: `${error} An error occurred while adding the plant to the user's collection.` });
     }
