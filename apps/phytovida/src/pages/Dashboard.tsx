@@ -15,7 +15,10 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (!user) return;
-    fetch(`http://localhost:3001/api/dashboard/${user.id}`)
+
+    const baseUrl = import.meta.env.VITE_API_URL;
+    const finalUrl = `${baseUrl}/dashboard/${user.id}`;
+    fetch(finalUrl)
       .then((res) => res.json())
       .then((resData) => {
         setData(resData);
