@@ -82,7 +82,6 @@ export function ResultSection({
                 {diagnosis.confidence}%
               </Badge>
             </div>
-
             {/* Confidence bar */}
             <div className="mt-3">
               <div className="flex justify-between text-xs text-muted-foreground mb-1">
@@ -96,17 +95,14 @@ export function ResultSection({
                 />
               </div>
             </div>
-
             {/* Low confidence warning */}
             {diagnosis.confidence < 40 && (
-              <p className="text-xs text-amber-600 bg-amber-50 rounded-lg px-3 py-2 mt-2">
+              <p className="text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/50 rounded-lg px-3 py-2 mt-2">
                 ⚠ Low confidence — try a clearer or closer photo for better
                 results
               </p>
-            )}
+            )}{" "}
           </CardHeader>
-
-          <Separator />
 
           <CardContent className="pt-4 flex flex-col gap-3">
             {/* Other possibilities */}

@@ -4,8 +4,18 @@ import type {
 } from "../services/analyzePlant.types";
 
 function parseResponse(data: PlantNetResponse): DiagnosisResult {
-  const top = data.results[0];
+  
+  if (!data.results || data.results.length === 0) {
+    return {
+      topMatch: null,
+      description: null,
+      confidence: 0,
+      remainingRequests: data.remainingIdentificationRequests,
+      allMatches: [],
+    };
+  }
 
+  const top = data.results[0];
   return {
     topMatch: top.name,
     description: top.description,

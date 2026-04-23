@@ -1,7 +1,7 @@
 import PlantUploadCard from "@/components/PlantUploadCard";
 import { PageHeader } from "./components/PageHeader";
 import { ResultSection } from "./components/ResultSection";
-import { useAskAi } from "./hooks/useAskai ";
+import { useAskAi } from "./hooks/useAskai";
 
 export default function AskAi() {
   const {

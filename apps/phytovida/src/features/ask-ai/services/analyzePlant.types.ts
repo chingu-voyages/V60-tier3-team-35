@@ -10,9 +10,9 @@ export interface PlantNetResponse {
   version: string;
 }
 export interface DiagnosisResult {
-  topMatch: string;
-  description: string;
-  confidence: number;
+  topMatch: string | null;
+  description: string | null;
+  confidence: number | null;
   remainingRequests: number;
   allMatches: Array<{
     name: string;
