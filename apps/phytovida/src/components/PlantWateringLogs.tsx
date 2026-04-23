@@ -3,11 +3,13 @@ import { Loader2, Droplets, AlertCircle } from "lucide-react";
 import {
 	Sheet,
 	SheetContent,
+	SheetFooter,
 	SheetHeader,
 	SheetTitle,
 } from "@repo/ui/components/sheet";
 import { useUserPlantLogs } from "@/hooks/user-plant-logs/useUserPlantLogs";
 import { Button } from "@repo/ui/components/button";
+import LogWateringDialog from "./LogWateringDialog";
 
 interface PlantWateringLogsContentProps {
 	userPlantId?: number;
@@ -162,7 +164,7 @@ export function PlantWateringLogsContent({
 interface PlantWateringLogsProps {
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
-	userPlantId?: number;
+	userPlantId: number;
 	plantName?: string;
 }
 
@@ -178,9 +180,9 @@ export function PlantWateringLogs({
 				<SheetHeader>
 					<div className="flex items-start   gap-2 ">
 						<Droplets className="h-14 w-14 text-cyan-600" />
-						<SheetTitle className=" text-2xl">
+						<SheetTitle className="max-w-[75%] text-2xl">
 							Watering logs for {plantName}
-						</SheetTitle>
+						</SheetTitle>{" "}
 					</div>
 				</SheetHeader>
 				<div className="flex-1 overflow-y-auto  ">
@@ -189,6 +191,9 @@ export function PlantWateringLogs({
 						plantName={plantName}
 					/>
 				</div>
+				<SheetFooter>
+					<LogWateringDialog plantName={plantName} userPlantId={userPlantId} />
+				</SheetFooter>
 			</SheetContent>
 		</Sheet>
 	);

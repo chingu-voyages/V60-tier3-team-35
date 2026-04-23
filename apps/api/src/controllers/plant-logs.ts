@@ -141,13 +141,14 @@ export const createPlantLogController = async (
 		const userId = req.userId;
 		const plantId = req.params.plantId ? Number(req.params.plantId) : undefined;
 
-		if (!userId) {
-			return sendResponse(res, 401, {
-				error: true,
-				message: "Unauthorized: Missing user authentication.",
-				success: false,
-			});
-		}
+		// TODO: uncomment the following lines to enforce authentication for creating plant logs
+		// if (!userId) {
+		// 	return sendResponse(res, 401, {
+		// 		error: true,
+		// 		message: "Unauthorized: Missing user authentication.",
+		// 		success: false,
+		// 	});
+		// }
 
 		if (!plantId || isNaN(Number(plantId))) {
 			res.status(404).json({
@@ -158,24 +159,29 @@ export const createPlantLogController = async (
 		}
 
 		// ownership check
-		const ownership = await db
-			.select()
-			.from(usersPlants)
-			.where(and(eq(usersPlants.id, plantId), eq(usersPlants.userId, userId)))
-			.limit(1);
+		// TODO: Uncomment the following lines to enforce ownership check for creating plant logs
+		// const ownership = await db
+		// 	.select()
+		// 	.from(usersPlants)
+		// 	.where(and(
+		// 		eq(usersPlants.id, plantId),
+		// 		eq(usersPlants.userId, userId))
+		// 	)
+		// 	.limit(1);
 
-		if (!ownership.length) {
-			return sendResponse(res, 403, {
-				error: true,
-				message: "Forbidden: You do not have access to this plant.",
-				success: false,
-			});
-		}
+		// if (!ownership.length) {
+		// 	return sendResponse(res, 403, {
+		// 		error: true,
+		// 		message: "Forbidden: You do not have access to this plant.",
+		// 		success: false,
+		// 	});
+		// }
 
 		const [log] = await db
 			.insert(plantWateringLogs)
 			.values({
-				userId,
+				userId: "user_IuWcLRNv7o",
+				//  userId,
 				userPlantId: plantId,
 			})
 			.returning();
