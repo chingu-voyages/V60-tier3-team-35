@@ -2,6 +2,8 @@
 export * from "./log";
 // User plant type
 export * from "./user-plant";
+// Shared Api response types
+export * from "./api";
 
 // Dashboard
 export interface Plant {
@@ -22,9 +24,17 @@ export interface Pagination {
 	hasNextPage: boolean;
 	limit: number;
 	total: number;
+	totalPages: number;
 }
 
-export interface PaginationResponse<Data> {
-	data: Data[];
-	pagination: Pagination;
+// Perenual API
+export interface PerenualPlant {
+  id: number;
+  common_name: string;
+  default_image?: { medium_url: string };
+  hardiness?: { min: string; max: string };
+}
+
+export interface PerenualResponse {
+  data: PerenualPlant[];
 }

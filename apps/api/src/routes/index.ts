@@ -11,7 +11,7 @@ import { authGuard } from "../middlewares/authGuard.js";
 
 const router: Router = Router();
 
-router.use("/auth", authRoutes)
+router.use("/auth", authRoutes);
 
 router.use("/dashboard", dashboardRoutes);
 
