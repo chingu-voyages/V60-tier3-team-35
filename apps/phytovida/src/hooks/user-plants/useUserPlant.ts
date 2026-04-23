@@ -1,13 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
-import { useAuthFetch } from "@/lib/authFetch";
 import { readUserPlant, userPlantsKeys } from "@/api";
+import { useApiClient } from "@/lib/authFetch";
 
 export const useUserPlant = (id: string) => {
-	const { authFetch } = useAuthFetch();
+	const { apiClient } = useApiClient();
 
 	return useQuery({
 		queryKey: userPlantsKeys.detail(id),
-		queryFn: () => readUserPlant(authFetch, id),
+		queryFn: () => readUserPlant(apiClient.get, id),
 		enabled: !!id,
 	});
 };
