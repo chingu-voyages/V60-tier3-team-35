@@ -3,6 +3,7 @@ import { db } from "../db/index.js";
 import { plantWateringLogs, usersPlants } from "../db/schema.js";
 import { and, desc, eq, gte, lte } from "drizzle-orm";
 import { sendResponse } from "../helper/response.js";
+import { count } from "drizzle-orm";
 
 type Params = {
   plantId: number;
@@ -18,10 +19,10 @@ export const readPlantLogController = async (
     const userPlantId = Number(req.params.plantId);
     const logId = Number(req.params.logId);
 
-    if (isNaN(userPlantId) && isNaN(logId)) {
+    if (isNaN(userPlantId) || isNaN(logId)) {
       return sendResponse(res, 400, {
         error: true,
-        message: "Invalid params",
+        message: "Invalid parameters provided",
         success: false,
       });
     }
@@ -38,7 +39,7 @@ export const readPlantLogController = async (
         and(
           eq(plantWateringLogs.id, logId),
           eq(plantWateringLogs.userPlantId, userPlantId),
-          eq(usersPlants.userId, userId), // ownership
+          eq(usersPlants.userId, userId),
         ),
       )
       .limit(1);
@@ -56,8 +57,7 @@ export const readPlantLogController = async (
       message: "Plant log fetched successfully.",
       success: true,
     });
-  } catch (error) {
-    console.log(error);
+  } catch {
     return res.status(500).json({ error: "Failed to fetch plant log" });
   }
 };
@@ -83,7 +83,7 @@ export const readPlantLogsController = async (req: Request, res: Response) => {
 
     const filters = [
       eq(plantWateringLogs.userPlantId, userPlantId),
-      eq(usersPlants.userId, req.userId!), // ownership check
+      eq(usersPlants.userId, req.userId!),
     ];
 
     if (from) filters.push(gte(plantWateringLogs.wateredAt, new Date(from)));
@@ -102,13 +102,13 @@ export const readPlantLogsController = async (req: Request, res: Response) => {
       .limit(limit)
       .offset(offset);
 
-    const totalResult = await db
-      .select({ count: plantWateringLogs.id })
+    const [totalResult] = await db
+      .select({ value: count() })
       .from(plantWateringLogs)
       .innerJoin(usersPlants, eq(plantWateringLogs.userPlantId, usersPlants.id))
       .where(and(...filters));
 
-    const total = totalResult.length;
+    const total = Number(totalResult?.value || 0);
 
     return sendResponse(res, 200, {
       data,
@@ -122,9 +122,7 @@ export const readPlantLogsController = async (req: Request, res: Response) => {
       message: "Plant logs fetched successfully.",
       success: true,
     });
-  } catch (error) {
-    console.log(error);
-
+  } catch {
     sendResponse(res, 500, {
       error: true,
       message: "Failed to fetch plant logs",
@@ -149,24 +147,19 @@ export const createPlantLogController = async (
       });
     }
 
-    if (!plantId || isNaN(Number(plantId))) {
-      return sendResponse(res, 404, {
+    if (!plantId || isNaN(plantId)) {
+      return sendResponse(res, 400, {
         error: true,
         success: false,
         message: "Plant ID is invalid or missing!",
       });
     }
 
-    console.log(plantId, userId);
-
-    // ownership check
     const ownership = await db
       .select()
       .from(usersPlants)
       .where(and(eq(usersPlants.id, plantId), eq(usersPlants.userId, userId)))
       .limit(1);
-
-    console.log(ownership);
 
     if (!ownership.length) {
       return sendResponse(res, 403, {
@@ -189,8 +182,7 @@ export const createPlantLogController = async (
       message: "Plant log created successfully.",
       success: true,
     });
-  } catch (error) {
-    console.log(error);
+  } catch {
     sendResponse(res, 500, {
       error: true,
       message: "Failed to create plant log",
@@ -215,36 +207,31 @@ export const deletePlantLogController = async (
       });
     }
 
-    if (!logId) {
-      return sendResponse(res, 400, {
-        error: true,
-        message: "Log ID is required",
-        success: false,
-      });
-    }
-
-    // ownership check
     const ownership = await db
       .select()
       .from(usersPlants)
-      .where(and(eq(usersPlants.id, plantId), eq(usersPlants.userId, userId)))
+      .where(
+        and(
+          eq(usersPlants.id, Number(plantId)),
+          eq(usersPlants.userId, userId),
+        ),
+      )
       .limit(1);
 
     if (!ownership.length) {
       return sendResponse(res, 403, {
         error: true,
-        message: "Forbidden: You do not have access to this plant.",
+        message: "Forbidden: Access denied.",
         success: false,
       });
     }
 
-    // ensure log belongs to plant + user
     const deleted = await db
       .delete(plantWateringLogs)
       .where(
         and(
           eq(plantWateringLogs.id, Number(logId)),
-          eq(plantWateringLogs.userPlantId, plantId),
+          eq(plantWateringLogs.userPlantId, Number(plantId)),
           eq(plantWateringLogs.userId, userId),
         ),
       )
@@ -263,8 +250,7 @@ export const deletePlantLogController = async (
       data: deleted[0],
       success: true,
     });
-  } catch (error) {
-    console.log(error);
+  } catch {
     sendResponse(res, 500, {
       error: true,
       message: "Failed to delete plant log",
@@ -278,7 +264,7 @@ type Body = {
 };
 
 export const updatePlantLogController = async (
-  req: Request<Pick<Params, "plantId" | "logId">, {}, Body>,
+  req: Request<Pick<Params, "plantId" | "logId">, object, Body>,
   res: Response,
 ) => {
   try {
@@ -286,31 +272,37 @@ export const updatePlantLogController = async (
     const { plantId, logId } = req.params;
     const { wateredAt } = req.body;
 
-    // ownership check
     const ownership = await db
       .select()
       .from(usersPlants)
-      .where(and(eq(usersPlants.id, plantId), eq(usersPlants.userId, userId)))
+      .where(
+        and(
+          eq(usersPlants.id, Number(plantId)),
+          eq(usersPlants.userId, userId),
+        ),
+      )
       .limit(1);
 
     if (!ownership.length) {
       return sendResponse(res, 403, {
         error: true,
-        message: "Forbidden: You do not have access to this plant.",
+        message: "Forbidden: Access denied.",
         success: false,
       });
     }
 
-    // update log
+    const updateData: Record<string, any> = {};
+    if (wateredAt) {
+      updateData.wateredAt = new Date(wateredAt);
+    }
+
     const updated = await db
       .update(plantWateringLogs)
-      .set({
-        ...(wateredAt ? { wateredAt: new Date(wateredAt) } : {}),
-      })
+      .set(updateData)
       .where(
         and(
           eq(plantWateringLogs.id, Number(logId)),
-          eq(plantWateringLogs.userPlantId, plantId),
+          eq(plantWateringLogs.userPlantId, Number(plantId)),
           eq(plantWateringLogs.userId, userId),
         ),
       )
@@ -329,8 +321,7 @@ export const updatePlantLogController = async (
       data: updated[0],
       success: true,
     });
-  } catch (error) {
-    console.log(error);
+  } catch {
     sendResponse(res, 500, {
       error: true,
       message: "Failed to update plant log",
@@ -344,8 +335,14 @@ export const readAllUserLogsController = async (
   res: Response,
 ) => {
   try {
-    const userId = req.userId!;
-
+    const userId = req.userId;
+    if (!userId) {
+      return sendResponse(res, 401, {
+        error: true,
+        message: "Unauthorized",
+        success: false,
+      });
+    }
     const data = await db
       .select({
         id: plantWateringLogs.id,
@@ -361,8 +358,7 @@ export const readAllUserLogsController = async (
       message: "All plant logs fetched.",
       success: true,
     });
-  } catch (error) {
-    console.log(error);
+  } catch {
     return res.status(500).json({ error: "Failed to fetch logs" });
   }
 };
