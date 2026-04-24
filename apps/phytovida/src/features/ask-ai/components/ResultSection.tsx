@@ -4,7 +4,6 @@ import { Alert, AlertDescription } from "@repo/ui/components/alert";
 import { Badge } from "@repo/ui/components/badge";
 import { Button } from "@repo/ui/components/button";
 import { Separator } from "@repo/ui/components/separator";
-import { CardTitle } from "@repo/ui/components/card";
 import type { ResultSectionProps } from "../askAi.types";
 
 function getConfidenceLabel(confidence: number): {
@@ -78,25 +77,25 @@ export function ResultSection({
                   {diagnosis.description}
                 </h3>
               </div>
-              <Badge variant={getConfidenceLabel(diagnosis.confidence).variant}>
+              <Badge variant={getConfidenceLabel(diagnosis.confidence!).variant}>
                 {diagnosis.confidence}%
               </Badge>
             </div>
             {/* Confidence bar */}
             <div className="mt-3">
               <div className="flex justify-between text-xs text-muted-foreground mb-1">
-                <span>{getConfidenceLabel(diagnosis.confidence).label}</span>
+                <span>{getConfidenceLabel(diagnosis.confidence!).label}</span>
                 <span>{diagnosis.confidence}% match</span>
               </div>
               <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
                 <div
-                  className={`h-full rounded-full transition-all ${getConfidenceColor(diagnosis.confidence)}`}
+                  className={`h-full rounded-full transition-all ${getConfidenceColor(diagnosis.confidence!)}`}
                   style={{ width: `${diagnosis.confidence}%` }}
                 />
               </div>
             </div>
             {/* Low confidence warning */}
-            {diagnosis.confidence < 40 && (
+            {diagnosis.confidence! < 40 && (
               <p className="text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/50 rounded-lg px-3 py-2 mt-2">
                 ⚠ Low confidence — try a clearer or closer photo for better
                 results
