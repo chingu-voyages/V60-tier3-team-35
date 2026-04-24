@@ -10,18 +10,15 @@ const API_KEY = process.env.PERENUAL_API_KEY;
 export const getPlantsData = async (req: Request, res: Response) => {
 
     try {
-        console.log("Controller hit")
 
         const response = await fetch(
             `${PERENUAL_BASE_URL}/species-list?key=${API_KEY}&page=1`
         );
-        console.log("Perrunal response:", response.status)
 
         if (!response.ok) {
             throw new Error(`Perenual API error: ${response.status}`);
         }
 
-        console.log("2.5 Parsing response body...");
         let data: PerenualResponse;
         try {
             data = await response.json() as PerenualResponse;
@@ -30,7 +27,6 @@ export const getPlantsData = async (req: Request, res: Response) => {
             throw parseError;
 
         }
-        console.log("3. Data received, plant count:", data.data?.length);
 
         const plantRows = data.data.map((plant: PerenualPlant) => ({
             id: String(plant.id),
@@ -40,10 +36,7 @@ export const getPlantsData = async (req: Request, res: Response) => {
             maxTemp: plant.hardiness?.max ? parseInt(plant.hardiness.max) : null,
         }));
 
-        console.log("5. Inserting into DB...");
 
-
-        console.log("DB instance:", db);
         await db
             .insert(plants)
             .values(plantRows)
@@ -63,4 +56,14 @@ export const getPlantsData = async (req: Request, res: Response) => {
         res.status(500).json({ error: "Failed to fetch plants from db" });
     }
 
+};
+
+// plantlibrary.ts controller
+export const getPlants = async (req: Request, res: Response) => {
+    try {
+        const allPlants = await db.select().from(plants);
+        res.status(200).json({ data: allPlants });
+    } catch (error) {
+        res.status(500).json({ error: "Failed to fetch plants" });
+    }
 };
