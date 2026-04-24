@@ -9,6 +9,7 @@ import AuthLayout from './layouts/auth-layout';
 import AskAi from './pages/AskAi';
 import MyGarden from './pages/MyGarden';
 import UserPlant from './pages/UserPlant';
+import PlantLibrary from './pages/PlantLibrary';
 
 export default function AppRoutes() {
   return (
@@ -41,6 +42,10 @@ export default function AppRoutes() {
         <Route
           path='dashboard'
           element={<Dashboard />}
+        />
+        <Route
+          path='plant-library'
+          element={<PlantLibrary />}
         />
          <Route
           path='ask-ai'
