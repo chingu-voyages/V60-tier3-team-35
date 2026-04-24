@@ -12,15 +12,15 @@ console.log(process.env.CLERK_PUBLISHABLE_KEY);
 // Middlewares
 app.use(cors());
 
+app.use(clerkMiddleware({}));
+app.use(express.json());
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/plants", plantRoutes);
-app.use("/api/auth/register/clerk", express.raw({ type: "application/json" }));
 
-app.use(express.json());
-app.use(clerkMiddleware({}));
+app.use("/api", appRoutes);
+// app.use("/api/auth/register/clerk", express.raw({ type: "application/json" }));
 
 // API Routes
-app.use("/api", appRoutes);
 
 // Health check endpoint
 app.get("/health", (req, res) => {

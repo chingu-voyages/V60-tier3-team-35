@@ -5,9 +5,9 @@ export const validateUserPlantInput = (req: Request, res: Response, next: NextFu
     if (!data) {
         return res.status(400).json({ error: "Missing request body" });
     }
-
+    console.log("In verification clerkMiddleware...")
+    console.log(req.body, typeof req.body);
     const { plantId, phase, wateringFrequency, lastWateredDate } = data;
-
     if (!plantId || typeof plantId !== "string") {
         return res.status(400).json({ error: "Missing or invalid plantId" });
     }
@@ -16,7 +16,7 @@ export const validateUserPlantInput = (req: Request, res: Response, next: NextFu
         return res.status(400).json({ error: "Missing or invalid phase" });
     }
 
-    if (wateringFrequency && typeof wateringFrequency !== "number") {
+    if (wateringFrequency && (typeof wateringFrequency !== "number" || wateringFrequency <= 0)) {
         return res.status(400).json({ error: "Invalid wateringFrequency" });
     }
 

@@ -19,7 +19,7 @@ export const usersPlants = pgTable("users_plants", {
 	plantId: text("plant_id").references(() => plants.id),
   phase: text("phase").default("planning"),
 	wateringFrequency: integer("watering_frequency").default(7),
-	lastWateredDate: timestamp("last_watered_date").defaultNow(),
+	lastWateredDate: timestamp("last_watered_date"),
 });
 
 export const plantWateringLogs = pgTable("plant_watering_logs", {

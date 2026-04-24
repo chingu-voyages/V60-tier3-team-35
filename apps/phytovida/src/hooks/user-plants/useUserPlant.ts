@@ -1,6 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
-import { readUserPlant, userPlantsKeys } from "@/api";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { createUserPlant, readUserPlant, userPlantsKeys } from "@/api";
 import { useApiClient } from "@/lib/authFetch";
+import type { CreateUserPlant } from "@/api/user-plants/user.plant.types";
 
 export const useUserPlant = (id: string) => {
 	const { apiClient } = useApiClient();
@@ -11,3 +12,11 @@ export const useUserPlant = (id: string) => {
 		enabled: !!id,
 	});
 };
+
+export const useCreateUserPlant = () => {
+	const { apiClient } = useApiClient();
+
+	return useMutation({
+		mutationFn: (plant: CreateUserPlant) => createUserPlant(apiClient.post, plant)
+	})
+}

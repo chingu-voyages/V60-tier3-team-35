@@ -7,7 +7,7 @@ import { addUserPlant } from "../services/user-plants.js";
 export const createUserPlantController = async (req: Request, res: Response) => {
 	const userId = req.userId || "";
 	const { plantId, phase, wateringFrequency, lastWateredDate } = req.body;
-
+	console.log(req.body);
 	const answer = await addUserPlant({ userId, plantId, phase, wateringFrequency, lastWateredDate });
 
 	answer.match((userPlant) => {

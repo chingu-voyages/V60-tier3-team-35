@@ -14,3 +14,14 @@ export const readUserPlant = async (
 ): Promise<ReadUserPlantResponse> => {
 	return authFetch(`/my-plants/${id}`);
 };
+
+export const createUserPlant = async (
+	authFetch: any,
+	data: {
+		plantId: string;
+		phase: string;
+		wateringFrequency: number | null;
+		lastWateredDate: Date | null;
+	}) => {
+	return await authFetch("/my-plants", data);
+}

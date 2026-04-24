@@ -7,6 +7,7 @@ import { errAsync, okAsync } from "neverthrow";
 export const addUserPlant = async (userPlant: UserPlantCreation) => {
     try {
         const userId = userPlant.userId;
+        console.log(userId);
         // Check if user exists in the database
         const user = await db
             .select()
@@ -29,8 +30,9 @@ export const addUserPlant = async (userPlant: UserPlantCreation) => {
         }
 
         // If it does, add it to the user's collection with the provided details
-        return okAsync(await db.insert(usersPlants).values(userPlant));
+        return okAsync(await db.insert(usersPlants).values(userPlant).returning());
     } catch (error) {
+        console.log(error);
         return errAsync({ reason: "InternalServerError", message: `${error} An error occurred while adding the plant to the user's collection.` });
     }
 }
