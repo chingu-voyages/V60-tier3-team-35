@@ -17,7 +17,7 @@ app.use("/api/plants", plantRoutes);
 app.use("/api/auth/register/clerk", express.raw({ type: "application/json" }));
 
 app.use(express.json());
-app.use(clerkMiddleware({}));
+app.use(clerkMiddleware());
 
 // API Routes
 app.use("/api", appRoutes);
