@@ -6,7 +6,7 @@ import appRoutes from "./routes/index.js";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-console.log(process.env.CLERK_PUBLISHABLE_KEY);
+
 // Middlewares
 app.use(cors());
 
@@ -14,6 +14,7 @@ app.use(express.json());
 app.use(clerkMiddleware({}));
 
 // API Routes
+app.use("/api", appRoutes);
 
 // Health check endpoint
 app.get("/health", (req, res) => {
