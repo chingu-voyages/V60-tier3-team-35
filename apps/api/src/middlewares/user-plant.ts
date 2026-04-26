@@ -20,8 +20,12 @@ export const validateUserPlantInput = (req: Request, res: Response, next: NextFu
         return res.status(400).json({ error: "Invalid wateringFrequency" });
     }
 
-    if (lastWateredDate && !(lastWateredDate instanceof Date) && isNaN(Date.parse(lastWateredDate))) {
-        return res.status(400).json({ error: "Invalid lastWateredDate" });
+    if (lastWateredDate) {
+        if (!(lastWateredDate instanceof Date) && isNaN(Date.parse(lastWateredDate))) {
+            return res.status(400).json({ error: "Invalid lastWateredDate" });
+        } else {
+            req.body.lastWateredDate = new Date(lastWateredDate);
+        }
     }
 
     next();

@@ -10,8 +10,8 @@ export const createUserPlantController = async (req: Request, res: Response) => 
 	console.log(req.body);
 	const answer = await addUserPlant({ userId, plantId, phase, wateringFrequency, lastWateredDate });
 
-	answer.match((userPlant) => {
-		return res.status(201).json({ userPlant });
+	answer.match((data) => {
+		return res.status(201).json(data);
 	}, (error) => {
 		if (error.reason === "UserNotFound" || error.reason === "PlantNotFound") {
 			return res.status(404).json({ error: true, message: error.message });
