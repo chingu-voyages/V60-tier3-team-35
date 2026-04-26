@@ -24,4 +24,4 @@ export const createUserPlant = async (
 		lastWateredDate: Date | null;
 	}) => {
 	return await authFetch("/my-plants", data);
-}
+};

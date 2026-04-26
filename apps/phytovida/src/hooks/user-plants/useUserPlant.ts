@@ -13,10 +13,14 @@ export const useUserPlant = (id: string) => {
 	});
 };
 
+type ApiError = {
+	status?: number;
+	message: string;
+};
+
 export const useCreateUserPlant = () => {
 	const { apiClient } = useApiClient();
-
-	return useMutation({
+	return useMutation<any, ApiError, CreateUserPlant>({
 		mutationFn: (plant: CreateUserPlant) => createUserPlant(apiClient.post, plant)
 	})
 }
