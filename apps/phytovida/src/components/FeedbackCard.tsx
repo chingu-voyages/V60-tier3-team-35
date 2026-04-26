@@ -1,4 +1,3 @@
-import { ArrowRight, Check } from 'lucide-react'
 import { Button } from '@repo/ui/components/button'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@repo/ui/components/dialog'
 import { useState } from 'react';
