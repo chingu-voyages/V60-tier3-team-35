@@ -52,14 +52,16 @@ export default function PlantLibrary() {
             <h1 className="flex justify-center py-8 text-headline">
                 Plant Library
             </h1>
-            <p>Browse our plant database to find out more about your favourite plants and choose what to grow next.</p>
+            <div className="flex justify-center gap-3 px-8">
+            <p className="text-center">Browse our plant database to find out more about your favourite plants and choose what to grow next.</p>
+            </div>
 
             {error && <p className="text-red-500 text-center">{error}</p>}
 
             {loading && <p className="text-center">Loading plants...</p>}
 
             {!loading && allPlants.length > 0 && (
-                <ul className="grid grid-cols-2 gap-4">
+                <ul className="grid grid-col-1 md:grid-cols-2 gap-4">
                     {allPlants.map((plant) => (
                         <li key={plant.id} className="border rounded p-4">
                             {plant.imageUrl && (
