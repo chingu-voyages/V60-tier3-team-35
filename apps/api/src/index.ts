@@ -2,8 +2,6 @@ import "dotenv/config"; // Load environment variables from .env file
 import express from "express";
 import { clerkMiddleware } from "@clerk/express";
 import cors from "cors";
-import dashboardRoutes from "./routes/dashboard.js";
-import plantRoutes from "./routes/plantlibrary.js";
 import appRoutes from "./routes/index.js";
 
 const app = express();
@@ -12,13 +10,8 @@ console.log(process.env.CLERK_PUBLISHABLE_KEY);
 // Middlewares
 app.use(cors());
 
-app.use(clerkMiddleware({}));
 app.use(express.json());
-app.use("/api/dashboard", dashboardRoutes);
-app.use("/api/plants", plantRoutes);
-
-app.use("/api", appRoutes);
-// app.use("/api/auth/register/clerk", express.raw({ type: "application/json" }));
+app.use(clerkMiddleware({}));
 
 // API Routes
 
