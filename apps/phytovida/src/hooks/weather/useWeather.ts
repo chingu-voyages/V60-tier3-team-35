@@ -1,12 +1,6 @@
 import { useEffect, useState } from "react";
 import { getWeather } from "../../api/weather/open-meteo";
-
-interface WeatherData {
-    temperature: number;
-    humidity: number;
-    rainChance: number;
-    description: number;
-}
+import type { WeatherData } from "@repo/types"
 
 
 export function useWeather(location: string) {
