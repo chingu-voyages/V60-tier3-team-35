@@ -1,4 +1,5 @@
 import { pgTable, serial, text, integer, timestamp } from "drizzle-orm/pg-core";
+import { createDeflate } from "node:zlib";
 
 export const userSettings = pgTable("user_settings", {
 	userId: text("user_id").primaryKey(),
@@ -20,6 +21,8 @@ export const usersPlants = pgTable("users_plants", {
 	phase: text("phase").default("planning"),
 	wateringFrequency: integer("watering_frequency"),
 	lastWateredDate: timestamp("last_watered_date"),
+	createdAt: timestamp("created_at").defaultNow(),
+	updatedAt: timestamp("updated_at").$onUpdateFn(() => new Date()),
 });
 
 export const plantWateringLogs = pgTable("plant_watering_logs", {
