@@ -9,9 +9,9 @@ export function WeatherCard({location}: {location: string}) {
 
     return (
         <>
-            <h2 className="text-white leading-none">{weather.temperature}</h2>
+            <h2 className="text-white leading-none">{weather.temperature}°C</h2>
             <p className="text-white/80">{weather.description} with {weather.rainChance}% chance of rain</p>
-            <p className="text-white/80">{weather.humidity}</p>
+            <p className="text-white/80">{weather.humidity}%</p>
         </>
 
     );
