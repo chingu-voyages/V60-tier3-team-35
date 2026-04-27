@@ -1,35 +1,3 @@
-// export default function WaterNotification() {
-//   const askPermission = async () => {
-//     await Notification.requestPermission();
-//   };
-
-//   const showNotification = () => {
-//     new Notification('Полив 🌱', {
-//       body: 'Пора полить растения',
-//     });
-//   };
-// const showNotification = () => {
-//   new Notification('Полив 🌱', {
-//     body: 'Пора полить растения',
-//   });
-// };
-//   return (
-//     <div className='space-x-3 text-center'>
-//       <button
-//         className='p-4 bg-green-300 text-black rounded-3xl'
-//         onClick={askPermission}
-//       >
-//         Разрешить
-//       </button>
-//       <button
-//         className='p-4 bg-green-300 text-black rounded-3xl'
-//         onClick={showNotification}
-//       >
-//         Показать
-//       </button>
-//     </div>
-//   );
-// }
 import { useState } from 'react';
 
 export default function WaterNotification() {
