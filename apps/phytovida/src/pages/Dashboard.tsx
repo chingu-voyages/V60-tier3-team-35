@@ -46,7 +46,7 @@ export default function Dashboard() {
         <LocationCard location={data?.location ?? "London, UK"} />
 
         <div className="flex-1 flex flex-col items-start bg-accent1 rounded-xl p-8 gap-6">
-          <WeatherCard />
+          <WeatherCard location={data?.location ?? "London, UK"}/>
         </div>
       </div>
 

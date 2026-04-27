@@ -9,6 +9,7 @@ export function useWeather(location: string) {
     const [error, setError] = useState<Error | null>(null);
 
     useEffect(() => {
+        console.log("location:", location);
         if (!location) return;
 
         async function fetchWeather() {
