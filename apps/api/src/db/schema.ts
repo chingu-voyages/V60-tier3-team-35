@@ -17,8 +17,8 @@ export const usersPlants = pgTable("users_plants", {
 	id: serial("id").primaryKey(),
 	userId: text("user_id").notNull(), //Clerk ID
 	plantId: text("plant_id").references(() => plants.id),
-  phase: text("phase").default("planning"),
-	wateringFrequency: integer("watering_frequency").default(7),
+	phase: text("phase").default("planning"),
+	wateringFrequency: integer("watering_frequency"),
 	lastWateredDate: timestamp("last_watered_date"),
 });
 
