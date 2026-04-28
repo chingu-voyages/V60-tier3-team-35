@@ -6,10 +6,11 @@ import CommonLayout from './layouts/common-layout';
 import SignInPage from './pages/auth/SignIn';
 import SignUpPage from './pages/auth/SignUp';
 import AuthLayout from './layouts/auth-layout';
-import AskAi from './pages/AskAi';
 import MyGarden from './pages/MyGarden';
 import UserPlant from './pages/UserPlant';
 import PlantLibrary from './pages/PlantLibrary';
+import Plant from './pages/Plant';
+import AskAi from './features/ask-ai';
 
 export default function AppRoutes() {
   return (
@@ -62,6 +63,7 @@ export default function AppRoutes() {
             element={<UserPlant />}
           />
         </Route>
+        <Route path='plants/plant-1' element={<Plant />} />
       </Route>
       <Route
         path='*'
