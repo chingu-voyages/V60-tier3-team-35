@@ -72,7 +72,8 @@ export default function PlantLibrary() {
                     ))}
                 </ul>
             )}
-
+            
+            // TODO: allow user to download next page
             <div className="flex justify-center gap-3">
                 <Button className="rounded-full" variant="secondary" asChild>
                     <Link to="/">Discover more</Link>
