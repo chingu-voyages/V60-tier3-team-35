@@ -8,6 +8,7 @@ import SignUpPage from './pages/auth/SignUp';
 import AuthLayout from './layouts/auth-layout';
 import MyGarden from './pages/MyGarden';
 import UserPlant from './pages/UserPlant';
+import PlantLibrary from './pages/PlantLibrary';
 import Plant from './pages/Plant';
 import AskAi from './features/ask-ai';
 
@@ -44,6 +45,10 @@ export default function AppRoutes() {
           element={<Dashboard />}
         />
         <Route
+          path='plant-library'
+          element={<PlantLibrary />}
+        />
+         <Route
           path='ask-ai'
           element={<AskAi />}
         />

@@ -1,8 +1,9 @@
 import { Router } from "express";
-import { getPlantsData } from "../controllers/plantlibrary.js";
+import { getPlantsData, getPlants } from "../controllers/plantlibrary.js";
 
 const router: Router = Router();
 
-router.get("/", getPlantsData);
+router.get("/", getPlants);
+router.post("/seed", getPlantsData)
 
 export default router;
