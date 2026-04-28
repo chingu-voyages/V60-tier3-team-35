@@ -15,7 +15,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (!user) return;
-    fetch(`http://localhost:3001/api/dashboard/${user.id}`)
+    fetch(`http://localhost:3000/api/dashboard/${user.id}`)
       .then((res) => res.json())
       .then((resData) => {
         setData(resData);
