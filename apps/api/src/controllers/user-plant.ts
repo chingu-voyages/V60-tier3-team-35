@@ -2,6 +2,43 @@ import type { Request, Response } from "express";
 import { plants, usersPlants } from "../db/schema.js";
 import { db } from "../db/index.js";
 import { and, eq } from "drizzle-orm";
+import { addUserPlant } from "../services/user-plants.js";
+import { addWateringLog } from "../services/plant-logs.js";
+
+export const createUserPlantController = async (req: Request, res: Response) => {
+	const userId = req.userId || "";
+	const { plantId, phase, wateringFrequency, lastWateredDate } = req.body;
+
+	const answer = await addUserPlant({ userId, plantId, phase, wateringFrequency, lastWateredDate });
+
+	answer.match(async (data) => {
+		const userPlant = data[0];
+
+		if (!!userPlant?.lastWateredDate) {
+			const logWateringAns = await addWateringLog(userPlant.id, userId, userPlant.lastWateredDate);
+			logWateringAns.match(() => { }, (logError) => {
+				switch (logError.reason) {
+					case "UserPlantNotFound":
+						return res.status(404).json({ error: true, message: logError.message });
+					case "Unauthorized":
+						return res.status(403).json({ error: true, message: logError.message });
+					default:
+						return res.status(500).json({ error: true, message: logError.message });
+				}
+			});
+		}
+		return res.status(201).json(data);
+	}, (error) => {
+		switch (error.reason) {
+			case "UserNotFound":
+				return res.status(404).json({ error: true, message: error.message });
+			case "PlantNotFound":
+				return res.status(404).json({ error: true, message: error.message });
+			default:
+				return res.status(500).json({ error: true, message: error.message });
+		}
+	})
+}
 
 export const readUserPlantsController = async (req: Request, res: Response) => {
 	try {
