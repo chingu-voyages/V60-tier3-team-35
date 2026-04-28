@@ -22,7 +22,7 @@ export function Header() {
 					My Garden
 				</Link>
 				<Link
-					to="/"
+					to="/plant-library"
 					className="font-sans text-sm font-bold text-base text-accent4 hover:text-link transition-colors duration-200">
 					Plant Library
 				</Link>

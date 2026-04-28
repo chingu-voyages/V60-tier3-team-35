@@ -15,6 +15,20 @@
       "when": 1776906090636,
       "tag": "0001_mushy_reptil",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1777278478991,
+      "tag": "0002_known_jane_foster",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1777287400407,
+      "tag": "0003_majestic_quentin_quire",
+      "breakpoints": true
     }
   ]
 }
