@@ -7,7 +7,6 @@ export async function authGuard(
 	next: NextFunction,
 ) {
 	const auth = getAuth(req);
-
 	if (!auth.isAuthenticated) {
 		res.status(403).json({
 			error: true,
@@ -15,7 +14,6 @@ export async function authGuard(
 		});
 		return;
 	}
-
 	req.userId = auth.userId;
 	next();
 }
