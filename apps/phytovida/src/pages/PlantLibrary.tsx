@@ -27,7 +27,7 @@ export default function PlantLibrary() {
                 `/plants?page=${pageRef.current}&limit=${limit}`,
             );
 
-            console.log(data);
+            // console.log(data);
 
             setAllPlants((prev) => {
                 const existingIds = new Set(prev.map((p) => p.id));

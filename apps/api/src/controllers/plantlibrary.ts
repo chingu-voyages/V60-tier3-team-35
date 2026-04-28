@@ -1,18 +1,51 @@
 import type { Request, Response } from "express";
 import { db } from "../db/index.js";
-import { sql } from "drizzle-orm";
-import { plants } from "../db/schema.js";
+import { sql, eq } from "drizzle-orm";
+import { plants, sourceSync } from "../db/schema.js";
 import type { PerenualPlant, PerenualResponse } from "@repo/types";
 
 const PERENUAL_BASE_URL = "https://perenual.com/api";
 const API_KEY = process.env.PERENUAL_API_KEY;
+const MAX_REQUESTS = 100;
 
 export const getPlantsData = async (req: Request, res: Response) => {
 
     try {
 
+        let syncRecord = await db
+            .select()
+            .from(sourceSync)
+            .where(eq(sourceSync.source, "perenual"))
+            .then((rows) => rows[0]);
+
+        if (!syncRecord) {
+            const inserted = await db
+                .insert(sourceSync)
+                .values({ source: "perenual" })
+                .returning();
+            syncRecord = inserted[0];
+        }
+
+        if (!syncRecord) {
+            throw new Error("Failed to create sync record");
+        }
+
+        const isAtPageLimit = syncRecord.lastFetchedPage >= MAX_REQUESTS;
+        const isAtTotalPages = syncRecord.totalPages !== null && syncRecord.lastFetchedPage >= syncRecord.totalPages;
+
+        if (isAtPageLimit || isAtTotalPages) {
+            return res.status(200).json({ inserted: 0, exhausted: true });
+        }
+
+        const nextPage = syncRecord.lastFetchedPage + 1;
+
+        await db
+            .update(sourceSync)
+            .set({ status: "running", lastRunAt: new Date() })
+            .where(eq(sourceSync.source, "perenual"));
+
         const response = await fetch(
-            `${PERENUAL_BASE_URL}/species-list?key=${API_KEY}&page=1`
+            `${PERENUAL_BASE_URL}/species-list?key=${API_KEY}&page=${nextPage}`
         );
 
         if (!response.ok) {
@@ -50,7 +83,20 @@ export const getPlantsData = async (req: Request, res: Response) => {
                 },
             });
 
-            res.status(200).json({ inserted: plantRows.length });
+        await db
+            .update(sourceSync)
+            .set({
+                lastFetchedPage: nextPage,
+                totalPages: data.last_page,
+                status: "idle",
+                errorMessage: null,
+            })
+            .where(eq(sourceSync.source, "perenual"));
+
+        res.status(200).json({
+            inserted: plantRows.length,
+            exhausted: nextPage >= MAX_REQUESTS || nextPage >= data.last_page,
+        });
 
     } catch (error) {
         res.status(500).json({ error: "Failed to fetch plants from db" });
@@ -88,6 +134,11 @@ export const getPlants = async (req: Request, res: Response) => {
             pagination: { total, hasNextPage }
         });
     } catch (error) {
-        res.status(500).json({ error: "Failed to fetch plants" });
+        await db
+            .update(sourceSync)
+            .set({ status: "error", errorMessage: (error as Error).message })
+            .where(eq(sourceSync.source, "perenual"));
+
+        res.status(500).json({ error: "Failed to fetch plants from Perenual" });
     }
 };
