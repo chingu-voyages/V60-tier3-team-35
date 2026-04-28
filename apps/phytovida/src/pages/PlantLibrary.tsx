@@ -12,6 +12,8 @@ export default function PlantLibrary() {
     const [error, setError] = useState("");
     const pageRef = useRef(1);
     const [hasNextPage, setHasNextPage] = useState(true);
+    // const [seeding, setSeeding] = useState(false);
+    // const [sourceExhausted, setSourceExhausted] = useState(false);
 
     const observerRef = useRef<HTMLDivElement | null>(null);
     const limit = 10;

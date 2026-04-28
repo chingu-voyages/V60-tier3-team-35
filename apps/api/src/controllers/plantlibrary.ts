@@ -45,7 +45,7 @@ export const getPlantsData = async (req: Request, res: Response) => {
             .where(eq(sourceSync.source, "perenual"));
 
         const response = await fetch(
-            `${PERENUAL_BASE_URL}/species-list?key=${API_KEY}&page=${nextPage}`
+            `${PERENUAL_BASE_URL}/v2/species-list?key=${API_KEY}&page=${nextPage}`
         );
 
         if (!response.ok) {
