@@ -60,9 +60,33 @@ export const getPlantsData = async (req: Request, res: Response) => {
 
 // plantlibrary.ts controller
 export const getPlants = async (req: Request, res: Response) => {
+
     try {
-        const allPlants = await db.select().from(plants);
-        res.status(200).json({ data: allPlants });
+        // parse page and limit from req query
+        const page = Number(req.query.page ?? 1);
+        const limit = Number(req.query.limit ?? 10);
+
+        // compute offset
+        const offset = (page - 1) * limit;
+
+        // total count 
+        const totalResult = await db
+            .select({ count: sql<number>`count(*)` })
+            .from(plants);
+
+        if (!totalResult[0]) {
+            throw new Error("Count query returned no rows");
+        }
+        const total = Number(totalResult[0].count);
+
+        const allPlants = await db.select().from(plants).limit(limit).offset(offset);
+
+        const hasNextPage = offset + limit < total;
+
+        res.status(200).json({
+            data: allPlants,
+            pagination: { total, hasNextPage }
+        });
     } catch (error) {
         res.status(500).json({ error: "Failed to fetch plants" });
     }

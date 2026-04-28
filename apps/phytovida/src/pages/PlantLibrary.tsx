@@ -10,19 +10,21 @@ export default function PlantLibrary() {
     const [allPlants, setAllPlants] = useState<DbPlant[]>([]);
     const { apiClient } = useApiClient();
     const [error, setError] = useState("");
+    const pageRef = useRef(1);
+    const [hasNextPage, setHasNextPage] = useState(true);
 
-    const loadingRef = useRef(false);
+    const observerRef = useRef<HTMLDivElement | null>(null);
+    const limit = 10;
 
     const fetchAllPlants = useCallback(async () => {
-        if (loadingRef.current) return;
+        if (loading || !hasNextPage) return;
 
         try {
-            loadingRef.current = true;
             setLoading(true);
             setError("");
 
             const data: ApiPaginatedResponse<DbPlant> = await apiClient.get(
-                `/plants`,
+                `/plants?page=${pageRef.current}&limit=${limit}`,
             );
 
             console.log(data);
@@ -32,18 +34,40 @@ export default function PlantLibrary() {
                 const filtered = data.data.filter((p) => !existingIds.has(p.id));
                 return [...prev, ...filtered];
             });
+
+            setHasNextPage(data.pagination.hasNextPage);
+            pageRef.current += 1;
+
         } catch (error) {
             setError((error as Error).message);
         } finally {
-            loadingRef.current = false;
             setLoading(false);
         }
-    }, [apiClient]);
+    }, [loading, hasNextPage]);
 
 
     useEffect(() => {
         fetchAllPlants();
-    }, [fetchAllPlants]);
+    }, []);
+
+    // infinite scroll trigger
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting && !loading && hasNextPage) {
+                    fetchAllPlants();
+                }
+            },
+            { threshold: 1 },
+        );
+
+        const el = observerRef.current;
+        if (el) observer.observe(el);
+
+        return () => {
+            if (el) observer.unobserve(el);
+        };
+    }, [fetchAllPlants, loading, hasNextPage]);
 
 
     return (
@@ -53,7 +77,7 @@ export default function PlantLibrary() {
                 Plant Library
             </h1>
             <div className="flex justify-center gap-3 px-8">
-            <p className="text-center">Browse our plant database to find out more about your favourite plants and choose what to grow next.</p>
+                <p className="text-center">Browse our plant database to find out more about your favourite plants and choose what to grow next.</p>
             </div>
 
             {error && <p className="text-red-500 text-center">{error}</p>}
@@ -72,8 +96,8 @@ export default function PlantLibrary() {
                     ))}
                 </ul>
             )}
-            
-            // TODO: allow user to download next page
+
+            {/* TODO: allow user to download next page */}
             <div className="flex justify-center gap-3">
                 <Button className="rounded-full" variant="secondary" asChild>
                     <Link to="/">Discover more</Link>
