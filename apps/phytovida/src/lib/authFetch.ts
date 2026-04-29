@@ -20,7 +20,10 @@ export const useApiClient = () => {
 			const data = await res.json();
 
 			if (!res.ok) {
-				throw new Error(data.message || "Something went wrong");
+				throw {
+					status: res.status,
+					message: data.message || "Something went wrong",
+				}
 			}
 
 			return data;

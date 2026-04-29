@@ -38,3 +38,12 @@ export interface PerenualPlant {
 export interface PerenualResponse {
   data: PerenualPlant[];
 }
+
+// Plant DB / API
+export interface DbPlant {
+    id: string;
+    name: string;
+    imageUrl: string | null;
+    minTemp: number | null;
+    maxTemp: number | null;
+}
