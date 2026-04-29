@@ -21,12 +21,13 @@ export function PlantCalendar({ plantId }: { plantId?: string }) {
     const fetchLogs = async () => {
       try {
         const url = plantId ? `/my-plants/${plantId}/logs` : `/my-plants/logs`;
-
         const response = (await apiClient.get(url)) as {
           data: ApiSuccess<PlantLog[]>;
         };
 
-        if (response.data.success) {
+        if (response.data && Array.isArray(response.data)) {
+          setLogs(response.data);
+        } else if (response.data?.data && Array.isArray(response.data.data)) {
           setLogs(response.data.data);
         }
       } catch (err) {
@@ -37,7 +38,10 @@ export function PlantCalendar({ plantId }: { plantId?: string }) {
     fetchLogs();
   }, [plantId, apiClient]);
 
-  const highlightedDays = logs.map((log) => new Date(log.wateredAt));
+  const highlightedDays = logs.map((log) => {
+    const d = new Date(log.wateredAt);
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  });
 
   const selectedDayLogs = logs.filter(
     (l) =>
@@ -54,7 +58,8 @@ export function PlantCalendar({ plantId }: { plantId?: string }) {
           onSelect={setSelectedDate}
           modifiers={{ hasData: highlightedDays }}
           modifiersClassNames={{
-            hasData: "bg-accent3 text-white rounded-full font-bold shadow-md",
+            hasData:
+              "relative after:absolute after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:w-1 after:h-1 after:bg-accent3 after:rounded-full after:content-['']",
           }}
         />
       </div>
