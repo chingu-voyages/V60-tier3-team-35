@@ -12,24 +12,20 @@ export default function PlantLibrary() {
     const [error, setError] = useState("");
     const pageRef = useRef(1);
     const [hasNextPage, setHasNextPage] = useState(true);
-    // const [seeding, setSeeding] = useState(false);
-    // const [sourceExhausted, setSourceExhausted] = useState(false);
+    const [seeding, setSeeding] = useState(false);
+    const [sourceExhausted, setSourceExhausted] = useState(false);
 
     const observerRef = useRef<HTMLDivElement | null>(null);
     const limit = 10;
 
-    const fetchAllPlants = useCallback(async () => {
-        if (loading || !hasNextPage) return;
-
+    const fetchData = useCallback(async (page: number) => {
         try {
             setLoading(true);
             setError("");
 
             const data: ApiPaginatedResponse<DbPlant> = await apiClient.get(
-                `/plants?page=${pageRef.current}&limit=${limit}`,
+                `/plants?page=${page}&limit=${limit}`,
             );
-
-            // console.log(data);
 
             setAllPlants((prev) => {
                 const existingIds = new Set(prev.map((p) => p.id));
@@ -40,17 +36,44 @@ export default function PlantLibrary() {
             setHasNextPage(data.pagination.hasNextPage);
             pageRef.current += 1;
 
-        } catch (error) {
-            setError((error as Error).message);
+        } catch (err) {
+            setError((err as Error).message);
         } finally {
             setLoading(false);
         }
-    }, [loading, hasNextPage]);
+    }, [apiClient]);
 
 
-    useEffect(() => {
-        fetchAllPlants();
-    }, []);
+    const fetchAllPlants = useCallback(async() => {
+        if (loading || !hasNextPage) return;
+        await fetchData(pageRef.current)
+    }, [loading, hasNextPage, fetchData])
+
+
+    const handleDiscoverMore = async() => {
+        if (hasNextPage) {
+            fetchAllPlants();
+            return;
+        }
+
+        try {
+            setSeeding(true);
+            const result = await apiClient.post("/plants/seed");
+
+            if (result.exhausted) {
+                setSourceExhausted(true);
+                return;
+            }
+
+            setAllPlants([]);
+            pageRef.current = 1;
+            await fetchData(1)
+        } catch (err) {
+            setError((err as Error).message);
+        } finally {
+            setSeeding(false)
+        }
+    }
 
     // infinite scroll trigger
     useEffect(() => {
@@ -99,11 +122,14 @@ export default function PlantLibrary() {
                 </ul>
             )}
 
-            {/* TODO: allow user to download next page */}
             <div className="flex justify-center gap-3">
+                {!sourceExhausted ? (
                 <Button className="rounded-full" variant="secondary" asChild>
-                    <Link to="/">Discover more</Link>
+                    {seeding ? "Please wait..." : "Discover more"}
                 </Button>
+                ) : (
+                <p> You've discovered all available plants</p>
+                )}
             </div>
 
         </div>
