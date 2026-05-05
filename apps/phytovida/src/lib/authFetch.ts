@@ -49,18 +49,17 @@ export const useApiClient = () => {
 	);
 
 	const del = useCallback(
-		(url: string) =>
-			request(url, {
+		(url: string) => {
+			return request(url, {
 				method: "DELETE",
-			}),
+			})
+		},
 		[request],
 	);
 
 	const patch = useCallback(
 		(url: string, body?: unknown) => {
-			console.log(url)
-			console.log(body)
-			request(url, {
+			return request(url, {
 				method: "PATCH",
 				body: JSON.stringify(body),
 			})

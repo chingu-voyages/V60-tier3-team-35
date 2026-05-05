@@ -48,7 +48,7 @@ export const validateUserPlantUpdateInput = (req: Request, res: Response, next: 
         switch (field.name) {
             case "wateringFrequency": {
                 if (!!field.value) {
-                    if (isNaN(Number(field.value))) {
+                    if (isNaN(Number(field.value)) || Number(field.value < 1)) {
                         return res.status(400).json({ error: true, message: "Watering Frequency must be null or a valid pozitive number" })
                     }
                     req.body.fields[index]["value"] = Number(field.value);

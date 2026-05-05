@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import { plants, usersPlants } from "../db/schema.js";
 import { db } from "../db/index.js";
 import { and, eq } from "drizzle-orm";
-import { addUserPlant, updateUserPlant } from "../services/user-plants.js";
+import { addUserPlant, deleteUserPlant, updateUserPlant } from "../services/user-plants.js";
 import { addWateringLog } from "../services/plant-logs.js";
 
 export const createUserPlantController = async (req: Request, res: Response) => {
@@ -123,6 +123,7 @@ export const readUserPlantController = async (req: Request, res: Response) => {
       .select({
         id: usersPlants.id,
         plantId: usersPlants.plantId,
+        phase: usersPlants.phase,
         wateringFrequency: usersPlants.wateringFrequency,
         lastWateredDate: usersPlants.lastWateredDate,
         plantName: plants.name,
@@ -175,7 +176,31 @@ export const updateUserPlantController = async (req: Request, res: Response) => 
 
   answer.match(
     (data) => {
-      return res.status(200).json({ message: "Plant updated sucsesfully." })
+      return res.status(200).json({ data: data.length > 0 ? data[0] : {} })
+    },
+    (error) => {
+      switch (error.reason) {
+        case "UserPlantNotFound": { return res.status(404).json({ error: true, message: error.message }); break; };
+        case "Unauthorized": { return res.status(403).json({ error: true, message: error.message }); break; }
+        default: { return res.status(500).json({ error: true, message: error.message }); break; }
+      }
+    }
+  )
+}
+
+export const deleteUerPlantController = async (req: Request, res: Response) => {
+  const userId = req.userId!;
+  const userPlantId = req.params.userPlantId;
+
+  if (!!userPlantId && isNaN(Number(userPlantId))) {
+    return res.status(400).json({ error: true, message: "Invalid id" })
+  }
+
+  const answer = await deleteUserPlant(userId, Number(userPlantId));
+
+  answer.match(
+    () => {
+      return res.status(200).json({ message: `Plant ${userPlantId} deleted successfully` });
     },
     (error) => {
       switch (error.reason) {

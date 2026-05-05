@@ -1,25 +1,31 @@
 import PlantNotFound from "@/components/PlantNotFound";
 import { PlantWateringLogs } from "@/components/PlantWateringLogs";
-import { useUpdateUserPlantFields, useUserPlant } from "@/hooks/user-plants/useUserPlant";
+import { useDeleteUserPlant, useUpdateUserPlantFields, useUserPlant } from "@/hooks/user-plants/useUserPlant";
 import { Button } from "@repo/ui/components/button";
 import { useState } from "react";
-import { useParams } from "react-router";
-import { Sprout, Trash2, Droplets, Leaf, CircleArrowRight } from "lucide-react";
+import { useNavigate, useParams } from "react-router";
+import { Sprout, Trash2, Droplets, Leaf, CircleArrowRight, TriangleAlert } from "lucide-react";
 import WateringFrequencyNotSetCard from "@/components/UserPlantUpdate/WateringFrequencyNotSetCard";
 import WateringFrequencyEdit from "@/components/UserPlantUpdate/WateringFrequencyEdit";
 import AlertCard from "@/components/AlertCard";
 import WateringFrequencyCard from "@/components/UserPlantUpdate/WateringFrequencyCard";
+import FeedbackCard from "@/components/FeedbackCard";
 
 export default function UserPlant() {
-	const { userPlantId } = useParams();
-	const [logsOpen, setLogsOpen] = useState(false);
-	const { isLoading, data } = useUserPlant(userPlantId!);
-	const updateUserPlantFields = useUpdateUserPlantFields();
-	const [editMode, setEditMode] = useState(false);
-	const isGrowing = false;
+	const navgiate = useNavigate();
 
+	const { userPlantId } = useParams();
+
+	const [logsOpen, setLogsOpen] = useState(false);
+	const [editMode, setEditMode] = useState(false);
 	const [phaseChangeAlertOpen, setPhaseChangeAlertOpen] = useState(false);
 	const [plantDeleteAlertOpen, setPlantDeleteAlertOpen] = useState(false);
+	
+	const { isLoading, data } = useUserPlant(userPlantId!);
+	const updateWateringFrequency = useUpdateUserPlantFields();
+	const updatePhase = useUpdateUserPlantFields();
+	const deletePlant = useDeleteUserPlant();
+
 
 	// TODO: replace loading UI
 	if (isLoading || !userPlantId) return "loading...";
@@ -27,6 +33,37 @@ export default function UserPlant() {
 	if (!data?.data) return <PlantNotFound />;
 
 	const plant = data?.data;
+
+
+	const handlePhaseChanged = () => {
+		updatePhase.mutate({
+			userPlantId,
+			body: {
+				fields: [{ name: "phase", value: "growing" }]
+			}
+		}, {
+			onSettled: () => {
+				setPhaseChangeAlertOpen(false);
+			}
+		}
+		);
+	}
+
+	const handlePlantDelete = () => {
+		deletePlant.mutate({
+			userPlantId
+		}, {
+			onSuccess: () => {
+				console.log("DELETED")
+				navgiate("/my-plants")
+			},
+			onError: (err) => {
+				console.log(`Error: ${err}`)
+			}
+		}
+		)
+	}
+
 	return (
 		<div className="p-5 m-auto">
 			<h1 className="text-center md:text-7xl">{plant.plantName}</h1>
@@ -42,7 +79,8 @@ export default function UserPlant() {
 
 			<section className="w-full p-8 border-2 border-solid rounded-4xl mt-8">
 				<div className="flex items-center gap-2">
-					{isGrowing ?
+					{plant.phase === "growing"
+						?
 						<div className="flex items-center gap-1 border-2 p-2 rounded-xl bg-primary text-white text-xs">
 							<Sprout className="w-4 h-4" /> Growing
 						</div>
@@ -52,7 +90,7 @@ export default function UserPlant() {
 						</div>
 
 					}
-					{!isGrowing && <>
+					{plant.phase === "planning" && <>
 						<Button
 							onClick={() => setPhaseChangeAlertOpen(true)}
 							className="cursor-pointer bg-transparent hover:bg-transparent hover:pl-4 border-dashed border-b-4 text-primary shadow-none"
@@ -63,8 +101,29 @@ export default function UserPlant() {
 							title="Has it actually been planted?"
 							description={`Marking ${plant.plantName} as growing will start watering reminders.`}
 							discardButton={{ text: "Not yet" }}
-							actionButton={{ text: "Yes, it's growing", bgColor: "bg-primary" }}
+							actionButton={{
+								text: "Yes, it's growing",
+								bgColor: "bg-primary",
+								onClickHandler: handlePhaseChanged
+							}}
+							isLoading={updatePhase.isPending}
 						/>
+						{updatePhase.isError &&
+							(
+								updatePhase.error?.status !== undefined &&
+									updatePhase.error.status < 500
+									? <FeedbackCard
+										icon={{ icon: <TriangleAlert />, bgColor: "bg-orange-600" }}
+										title={"Your details need a tweak"}
+										description={{ text: "Some details didn't look right. Please review and try again.", color: "text-orange-600" }}
+									/>
+									: <FeedbackCard
+										icon={{ icon: <TriangleAlert />, bgColor: "bg-red-800" }}
+										title={"We couldn't update your plant"}
+										description={{ text: "We couldn't reach the garden service. Please try again in a moment.", color: "text-red-800" }}
+									/>
+							)
+						}
 					</>}
 					<Button
 						onClick={() => setPlantDeleteAlertOpen(true)}
@@ -78,7 +137,11 @@ export default function UserPlant() {
 						title="Remove from your garden?"
 						description={`${plant.plantName} and its watering history will be removed from your garden. This can’t be undone.`}
 						discardButton={{ text: "Keep it" }}
-						actionButton={{ text: "Remove from garden", bgColor: "bg-red-800" }}
+						actionButton={{
+							text: "Remove from garden", bgColor: "bg-red-800",
+							onClickHandler: handlePlantDelete
+						}}
+						isLoading={deletePlant.isPending}
 					/>
 				</div>
 				<div className="mt-4 p-6 rounded-xl bg-gray-100 pb-12">
@@ -97,7 +160,7 @@ export default function UserPlant() {
 							setEditMode={setEditMode}
 							userPlantId={plant.id}
 							defaultValue={plant.wateringFrequency}
-							updateUserPlantFields={updateUserPlantFields}
+							updateUserPlantFields={updateWateringFrequency}
 						/>
 						:
 						plant.wateringFrequency ?

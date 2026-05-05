@@ -33,5 +33,15 @@ export const updateUserPlantFields = async (
 		fields: { name: string, value: any }[]
 	}
 ) => {
-	return await authFetch(`/my-plants/${userPlantId}`, data);
+	const resp = await authFetch(`/my-plants/${userPlantId}`, data);
+	return resp.data;
+}
+
+export const deleteUserPlant = async (
+	authFetch: any,
+	userPlantId: number
+) => {
+	console.log(`To delete: ${userPlantId}`)
+	const resp = await authFetch(`/my-plants/${userPlantId}`);
+	return resp.json();
 }

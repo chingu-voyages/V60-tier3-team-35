@@ -1,7 +1,8 @@
 import { Button } from "@repo/ui/components/button"
 import { Input } from "@repo/ui/components/input"
-import { Check, X } from "lucide-react"
+import { Check, TriangleAlert, X } from "lucide-react"
 import { useState } from "react"
+import FeedbackCard from "../FeedbackCard"
 
 interface PropType {
     setEditMode: any,
@@ -19,9 +20,7 @@ const WateringFrequencyEdit = ({ setEditMode, userPlantId, defaultValue, updateU
                 fields: [{ name: "wateringFrequency", value: wateringFrequency }]
             }
         }, {
-            onSuccess: (d: any) => {
-                console.log("Updated")
-                console.log(d);
+            onSuccess: () => {
                 setEditMode(false);
             },
             onError: (e: any) => {
@@ -54,6 +53,19 @@ const WateringFrequencyEdit = ({ setEditMode, userPlantId, defaultValue, updateU
                     {updateUserPlantFields.isPending && "..."}
                 </Button>
             </div>
+            {updateUserPlantFields.isError && (
+                updateUserPlantFields.error?.status !== undefined && updateUserPlantFields.error.status < 500
+                    ? <FeedbackCard
+                        icon={{ icon: <TriangleAlert />, bgColor: "bg-orange-600" }}
+                        title={"Your details need a tweak"}
+                        description={{ text: `Some details didn't look right.  ${updateUserPlantFields.error.message}`, color: "text-orange-600" }}
+                    />
+                    : <FeedbackCard
+                        icon={{ icon: <TriangleAlert />, bgColor: "bg-red-800" }}
+                        title={"We couldn't update your plant"}
+                        description={{ text: "We couldn't reach the garden service. Please try again in a moment.", color: "text-red-800" }}
+                    />
+            )}
         </div>
     )
 }

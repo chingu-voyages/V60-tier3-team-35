@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   createUserPlantController,
+  deleteUerPlantController,
   readUserPlantController,
   readUserPlantsController,
   updateUserPlantController,
@@ -17,5 +18,7 @@ router.get("/logs", readAllUserLogsController);
 router.get("/:plantId", readUserPlantController);
 
 router.patch("/:userPlantId", validateUserPlantUpdateInput, updateUserPlantController);
+
+router.delete("/:userPlantId", deleteUerPlantController)
 
 export default router;

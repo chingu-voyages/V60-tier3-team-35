@@ -7,9 +7,10 @@ interface PropTypes {
     title: string,
     description: string,
     discardButton: { text: string },
-    actionButton: { text: string, bgColor: string }
+    actionButton: { text: string, bgColor: string, onClickHandler: any }
+    isLoading: boolean
 }
-const AlertCard = ({ open, setOpen, title, description, discardButton, actionButton }: PropTypes) => {
+const AlertCard = ({ open, setOpen, title, description, discardButton, actionButton, isLoading }: PropTypes) => {
     return (
         <Dialog
             open={open}
@@ -29,8 +30,10 @@ const AlertCard = ({ open, setOpen, title, description, discardButton, actionBut
                         {discardButton.text}
                     </Button>
                     <Button
-                        className={`${actionButton.bgColor} hover:${actionButton.bgColor}`}>
-                        {actionButton.text}
+                        className={`${actionButton.bgColor} hover:${actionButton.bgColor}`}
+                        onClick={actionButton.onClickHandler}
+                    >
+                        {actionButton.text} {isLoading && "..."}
                     </Button>
                 </div>
             </DialogContent>

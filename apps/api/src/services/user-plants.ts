@@ -70,9 +70,38 @@ export const updateUserPlant = async (userId: string, userPlantId: number, field
         return okAsync(await db
             .update(usersPlants)
             .set(objectToUpdate)
-            .where(eq(usersPlants.id, userPlantId)));
+            .where(eq(usersPlants.id, userPlantId))
+            .returning()
+        );
 
     } catch (error) {
         return errAsync({ reason: "InternalServerError", message: `${error} An error occured while updating user's plant` })
     }
+}
+
+export const deleteUserPlant = async (userId: string, userPlantId: number) => {
+    try {
+        const userPlantsFromDb = await db
+            .select()
+            .from(usersPlants)
+            .where(eq(usersPlants.id, userPlantId));
+
+
+        if (userPlantsFromDb.length === 0) {
+            return errAsync({ reason: "UserPlantNotFound", message: `Plant was not found.` })
+        }
+
+        const userPlantFromDb = userPlantsFromDb[0];
+
+        if (userPlantFromDb?.userId !== userId) {
+            return errAsync({ reason: "Unauthorized", message: "User does not have access to this plant" })
+        }
+
+        return okAsync(await db
+            .delete(usersPlants)
+            .where(eq(usersPlants.id, userPlantId)));
+    } catch (error: any) {
+        return errAsync({ reason: "InternalServerError", message: `${error} An error occured while updating user's plant` })
+    }
+
 }
