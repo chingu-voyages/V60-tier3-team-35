@@ -81,11 +81,3 @@ export const pushNotifications = pgTable(
     ),
   }),
 );
-export const sourceSync = pgTable('source_sync', {
-  id: serial('id').primaryKey(),
-  source: text('source').notNull().unique(), // 'perenual' (but can reuse for different APIs)
-  lastFetchedId: integer('last_fetched_id').notNull().default(0),
-  status: text('status').notNull().default('idle'),
-  lastRunAt: timestamp('last_run_at'),
-  errorMessage: text('error_message'),
-});
