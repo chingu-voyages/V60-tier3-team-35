@@ -26,9 +26,9 @@ export function PlantLibraryCard({ id, name, imageUrl, hardiness, watering, sunl
             <div className="absolute p-5 bg-white/50 rounded-t-2xl backdrop-blur-xs h-28 translate-y-28 transition-all duration-500 group-hover:translate-y-0 bottom-0 left-0 w-full">
                 <div className="flex items-start justify-between h-full">
 
-                    <div className="flex flex-col gap-2 items-start gap-1">
+                    <div className="flex flex-col gap-2 items-start gap-1 min-w-0 max-w-[55%]">
 
-                        <h2 className="text-2xl">{name}</h2>
+                        <h2 className="text-2xl truncate w-full">{name}</h2>
                         {isSignedIn && <CreateUserPlantForm plantId={id} name={name} />}
 
 
