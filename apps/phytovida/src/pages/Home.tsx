@@ -1,4 +1,5 @@
-
+import { Button } from "@repo/ui/components/button";
+import { Link } from "react-router"
 
 
 export default function Home() {
@@ -10,7 +11,6 @@ export default function Home() {
 				<h1 className="flex text-center text-headline md:text-8xl">
 					Now Every Plant Can Thrive
 				</h1>
-
 				<div className="relative flex justify-center">
 
 					<div className="bg-accent2 absolute inset-y-0 left-0 right-0 top-[30%] rounded-3xl"></div>
@@ -18,15 +18,12 @@ export default function Home() {
 						src="/homepage_plant.jpeg"
 						alt="Two dark green leaves against a grey background"
 						className="relative rounded-t-3xl w-[75%] object-cover border-t-9 border-l-9 border-r-9 border-black" />
-
 				</div>
 
 				<div className="flex flex-col gap-4 py-10">
-
 					<h2 className="text-accent6 text-2xl max-w-xl"></h2>
 					<p className="text-accent2">How it works</p>
 					<h3 className="text-4xl max-w-xl">Healthy plants start here</h3>
-
 				</div>
 				<div className="grid grid-col-2 md:grid-cols-4 gap-4">
 					<div>
@@ -47,19 +44,48 @@ export default function Home() {
 					</div>
 				</div>
 
-				<div className="flex flex-col items-center gap-4 py-20">
-					<h2 className="text-center text-5xl">Ask AI</h2>
-					<p>Get instant AI-powered help to diagnose common pests and diseases.</p>
+				<div className="flex flex-col items-center gap-4 pt-20 pb-10">
+					<div className="flex flex-col items-center gap-4 py-20">
+						<h2 className="text-center text-5xl">Ask AI</h2>
+						<p>Get instant AI-powered help to diagnose common pests and diseases.</p>
+					</div>
+					<div>
+						<img
+							src="/homepage_plant2.jpeg"
+							alt="Light green leaves and white flowers against a grey background"
+							className="rounded-2xl object-cover" />
+
+					</div>
+					<Button className="rounded-full bg-accent1 text-white mt-20 px-20" variant="secondary" asChild>
+						<Link to="/ask-AI">Ask AI</Link>
+					</Button>
 				</div>
 
-				<div>
-					<img
-						src="/homepage_plant.jpeg"
-						alt="Two dark green leaves against a grey background"
-						className="rounded-t-3xl object-cover" />
-
+				<div className="flex flex-col items-center gap-4 pt-20 pb-10">
+					<h2 className="text-center text-5xl">Plant Library</h2>
+					<p>Browse the plant library and discover sunlight, watering and hardiness information.</p>
 				</div>
 
+				<div className="flex flex-col items-center gap-4">
+					<div className="flex flex-row items-center gap-8">
+						<div className="w-1/2">
+							<img
+								src="/homepage_plant.jpeg"
+								alt="Two dark green leaves against a grey background"
+								className="rounded-2xl object-cover"
+							/>
+						</div>
+						<div className="w-1/2">
+							<h3>Monstera deliciosa</h3>
+							<h4 className="text-accent6 pb-8">Swiss cheese plant</h4>
+							<p>Native to the tropical rainforests of Central America, the monstera deliciosa is one of the most recognisable houseplants in the world. It's beloved for its large, glossy, heart-shaped leaves that develop distinctive splits and holes (called fenestrations) as the plant matures — hence the "Swiss cheese" nickname.</p>
+						</div>
+					</div>
+
+					<Button className="rounded-full bg-accent1 text-white mt-20 px-20" variant="secondary" asChild>
+						<Link to="/plant-library">Discover more</Link>
+					</Button>
+				</div>
 			</div>
 
 		</section>
