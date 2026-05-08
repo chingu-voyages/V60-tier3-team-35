@@ -10,11 +10,9 @@ services:
     runtime: node
     plan: free
     region: frankfurt
-    buildCommand: pnpm install --frozen-lockfile && pnpm --filter api... build
+    buildCommand: pnpm install --frozen-lockfile --prod=false && pnpm --filter api... build
     startCommand: pnpm --filter api db:migrate && pnpm --filter api start
     envVars:
-      - key: NODE_ENV
-        value: production
       - key: NODE_VERSION
         value: "20"
 
