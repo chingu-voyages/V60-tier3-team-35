@@ -9,29 +9,36 @@ import pushRoutes from "./routes/push.js";
 import { startScheduler } from "./jobs/scheduler.js";
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = Number(process.env.PORT) || 3001;
 
 // Middlewares
 const allowedOrigins = ["process.env.CORS_ORIGIN", "http://localhost:5173"];
 
 app.use(
   cors({
-    origin: function (origin, callback) {
+    origin: (origin, callback) => {
+      // Allow no-origin requests (curl, health checks)
       if (!origin) return callback(null, true);
 
-      if (allowedOrigins.indexOf(origin) === -1) {
-        const msg =
-          "The CORS policy for this site does not allow access from the specified Origin.";
-        return callback(new Error(msg), false);
-      }
-      return callback(null, true);
+      const allowed = (process.env.CORS_ORIGIN ?? "")
+        .split(",")
+        .map((s) => s.trim());
+
+      // Exact match against allowed origins
+      if (allowed.includes(origin)) return callback(null, true);
+
+      // Allow Vercel preview deployments (*.vercel.app)
+      try {
+        if (/\.vercel\.app$/.test(new URL(origin).hostname)) {
+          return callback(null, true);
+        }
+      } catch {}
+
+      callback(new Error("Not allowed by CORS: " + origin));
     },
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
-
 app.use(express.json());
 app.use(clerkMiddleware());
 
@@ -51,8 +58,8 @@ app.get("/health", (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   // eslint-disable-next-line no-console
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
   startScheduler();
 });

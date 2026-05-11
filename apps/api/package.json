@@ -10,6 +10,9 @@
     "build": "tsdown",
     "lint": "eslint . --max-warnings 0",
     "check-types": "tsc --noEmit",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsdown src/db/migrate.ts && node dist/migrate.cjs",
+    "db:migrate:prod": "node dist/db/migrate.cjs",
     "db:seed": "pnpm exec drizzle-kit push && tsdown src/db/seed.ts && node dist/seed.cjs",
     "db:reset": "tsdown src/db/reset.ts && node dist/reset.cjs"
   },

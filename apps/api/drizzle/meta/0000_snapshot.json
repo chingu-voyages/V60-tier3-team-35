@@ -1,5 +1,5 @@
 {
-  "id": "e622e7ae-0044-4dd9-ac4a-06e4888a1e81",
+  "id": "3f5d8f79-dd00-4915-bcf1-ecd6a99ce7ba",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -20,11 +20,11 @@
           "primaryKey": false,
           "notNull": true
         },
-        "plant_id": {
-          "name": "plant_id",
-          "type": "text",
+        "user_plant_id": {
+          "name": "user_plant_id",
+          "type": "integer",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "watered_at": {
           "name": "watered_at",
@@ -42,17 +42,17 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "plant_watering_logs_plant_id_plants_id_fk": {
-          "name": "plant_watering_logs_plant_id_plants_id_fk",
+        "plant_watering_logs_user_plant_id_users_plants_id_fk": {
+          "name": "plant_watering_logs_user_plant_id_users_plants_id_fk",
           "tableFrom": "plant_watering_logs",
-          "tableTo": "plants",
+          "tableTo": "users_plants",
           "columnsFrom": [
-            "plant_id"
+            "user_plant_id"
           ],
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -84,15 +84,21 @@
           "primaryKey": false,
           "notNull": false
         },
-        "min_temp": {
-          "name": "min_temp",
-          "type": "integer",
+        "watering": {
+          "name": "watering",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
-        "max_temp": {
-          "name": "max_temp",
-          "type": "integer",
+        "sunlight": {
+          "name": "sunlight",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "hardiness": {
+          "name": "hardiness",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         }
@@ -101,6 +107,177 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.push_notifications": {
+      "name": "push_notifications",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "plant_id": {
+          "name": "plant_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "endpoint": {
+          "name": "endpoint",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "notification_type": {
+          "name": "notification_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "last_sent_date": {
+          "name": "last_sent_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "push_notification_unique_idx": {
+          "name": "push_notification_unique_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "plant_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "endpoint",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "notification_type",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "push_notifications_endpoint_push_subscriptions_endpoint_fk": {
+          "name": "push_notifications_endpoint_push_subscriptions_endpoint_fk",
+          "tableFrom": "push_notifications",
+          "tableTo": "push_subscriptions",
+          "columnsFrom": [
+            "endpoint"
+          ],
+          "columnsTo": [
+            "endpoint"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.push_subscriptions": {
+      "name": "push_subscriptions",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "endpoint": {
+          "name": "endpoint",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "p256dh": {
+          "name": "p256dh",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "auth": {
+          "name": "auth",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "endpoint_idx": {
+          "name": "endpoint_idx",
+          "columns": [
+            {
+              "expression": "endpoint",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "push_subscriptions_endpoint_unique": {
+          "name": "push_subscriptions_endpoint_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "endpoint"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -153,19 +330,37 @@
           "primaryKey": false,
           "notNull": false
         },
+        "phase": {
+          "name": "phase",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'planning'"
+        },
         "watering_frequency": {
           "name": "watering_frequency",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false,
-          "default": 7
+          "notNull": false
         },
         "last_watered_date": {
           "name": "last_watered_date",
           "type": "timestamp",
           "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
           "notNull": false,
           "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},

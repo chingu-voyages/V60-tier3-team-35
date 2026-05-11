@@ -1,0 +1,41 @@
+databases:
+  - name: phytovida-db
+    plan: free
+    region: frankfurt
+    postgresMajorVersion: "16"
+
+services:
+  - type: web
+    name: phytovida-api
+    runtime: node
+    plan: free
+    region: frankfurt
+    buildCommand: pnpm install --frozen-lockfile --prod=false && pnpm --filter api... build
+    startCommand: pnpm --filter api db:migrate:prod && pnpm --filter api start
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+
+      - key: DATABASE_URL
+        fromDatabase:
+          name: phytovida-db
+          property: connectionString
+
+      - key: CLERK_PUBLISHABLE_KEY
+        sync: false
+      - key: CLERK_SECRET_KEY
+        sync: false
+      - key: WEBHOOK_SECRET
+        sync: false
+      - key: PERENUAL_API_KEY
+        sync: false
+      - key: VAPID_PUBLIC_KEY
+        sync: false
+      - key: VAPID_PRIVATE_KEY
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
